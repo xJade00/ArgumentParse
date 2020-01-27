@@ -19,6 +19,15 @@ object Strict extends Parser {
 }
 object Parser {
 
+  /**
+   * Parses the content.
+   *
+   * @param content The content to parse.
+   * @param arguments Arguments that you want to check for.
+   * @param parser The mode to parse as.
+   * @tparam Mode Strict if you want it to fail when there's a bad argument, or Lenient if you want to ignore bad arguments. (A missing required argument will return an empty map even on Lenient)
+   * @return A Try on Strict.
+   */
   def parse[Mode <: Parser](content: String, arguments: Set[Argument[_]])(implicit parser: Mode): parser.Out = parser.parse(content, arguments)
 
   private[ap] def internal(content: String, options: Set[Argument[Any]], ignore: Boolean): Try[ParsedArgument] = Try {
@@ -43,6 +52,7 @@ object Parser {
       case None => new ParsedArgument(values.map { case (_, name, value) => (name, value) }.toMap)
     }
   } match {
+
     case Failure(_) if ignore => Success(new ParsedArgument(Map()))
     case x => x
   }
