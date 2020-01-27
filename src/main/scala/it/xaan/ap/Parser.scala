@@ -24,7 +24,7 @@ object Parser {
   private[ap] def internal(content: String, options: Set[Argument[Any]], ignore: Boolean): Try[ParsedArgument] = Try {
     val filtered = options.filter(x => content.contains(s"--${x.name}="))
     val required = options.filter(x => x.required)
-    if (required.diff(filtered).nonEmpty && !ignore) throw MissingArgumentsException(options.diff(filtered) ++ required.diff(filtered))
+    if (required.diff(filtered).nonEmpty) throw MissingArgumentsException(options.diff(filtered) ++ required.diff(filtered))
     val values = filtered.map(argument => {
       val name = s"--${argument.name}="
       val index = content.indexOf(name)
