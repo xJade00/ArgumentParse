@@ -1,9 +1,9 @@
 package it.xaan.ap
 
-case class Argument[T](
+case class Argument[+T](
                         name: String,
                         aliases: Seq[String] = Nil,
-                        allowedValues: Seq[Any] = Nil,
+                        allowedValues: Seq[T] = Nil,
                         required: Boolean = false,
                         argType: ArgumentType[T]
                       ) {

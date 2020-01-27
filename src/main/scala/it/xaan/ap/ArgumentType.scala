@@ -3,9 +3,9 @@ package it.xaan.ap
 import scala.util.Try
 import scala.util.matching.Regex
 
-abstract class ArgumentType[T](val validator: String => Boolean, val converter: String => T) {
+abstract class ArgumentType[+T](val validator: String => Boolean, val converter: String => T) {
   def find(str: String): String = {
-    val idx = str.indexWhere(x => x == " " || x == '\n' || x == '\r')
+    val idx = str.indexWhere(x => x == ' ' || x == '\n' || x == '\r')
     str.substring(0, if (idx == -1) str.length else idx)
   }
 
@@ -15,17 +15,23 @@ abstract class ArgumentType[T](val validator: String => Boolean, val converter: 
     else None
   }
 }
+private object ArgumentType {
+  val StringRegex = """"(\\"|[^"])*[^\\]""""
+}
 case object CharArg extends ArgumentType[Char](x => x.length == 3, _ (1)) {
   override def find(str: String): String =
     if (str.length < 3) ""
     else str.substring(0, 3)
 }
-case object StringArg extends ArgumentType[String](x => x == "\"\"" || x.matches("""^"(\\"|[^"])*[^\\]"$"""), x => x.substring(0, x.length - 1)) {
-  private val regex = new Regex(""""^"(\\"|[^"])*[^\\]"$"""")
+case object StringArg extends ArgumentType[String](x => x == "\"\"" || x.matches(ArgumentType.StringRegex), x => x.substring(0, x.length - 1)) {
+  private val regex = new Regex(ArgumentType.StringRegex)
 
   override def find(str: String): String = regex.findFirstIn(str).getOrElse("")
 
-  override def grab(str: String): Option[String] = Some(find(str))
+  override def grab(str: String): Option[String] = {
+    val x = find(str)
+    Some(x.substring(1, x.length -1).replace("\\\"", "\""))
+  }
 }
 case object BooleanArg extends ArgumentType[Boolean](x => x == "true" || x == "false", _.toBoolean)
 case object DoubleArg extends ArgumentType[Double](x => Try(x.replace("\r\n", "").toDouble).isSuccess, _.toDouble)
