@@ -26,7 +26,7 @@ class ParsedArgument(private val map: Map[String, Any]) {
    * @return None if the key doesn't exist or it's not of the specified type, Some with the value if it does.
    */
   def get[T](key: Argument[T]): PossibleArg[T] = Try(map(key.name).asInstanceOf[T]) match {
-    case Failure(exception) => null /*
+    case Failure(exception) =>
       exception.printStackTrace()
       exception match {
       case x: ParsingException =>
@@ -35,7 +35,7 @@ class ParsedArgument(private val map: Map[String, Any]) {
           case _ => NoArg
         }
       case _ => NoArg
-    }*/
+    }
     case Success(value) => SomeArg(value)
   }
 
