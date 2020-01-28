@@ -19,12 +19,16 @@ object Strict extends Parser {
 }
 object Parser {
 
+  def strict(content: String, arguments: Set[Argument[_]]): Try[ParsedArgument] = parse(content, arguments)(Strict)
+
+  def lenient(content: String, arguments: Set[Argument[_]]): ParsedArgument = parse(content, arguments)(Lenient)
+
   /**
    * Parses the content.
    *
-   * @param content The content to parse.
+   * @param content   The content to parse.
    * @param arguments Arguments that you want to check for.
-   * @param parser The mode to parse as.
+   * @param parser    The mode to parse as.
    * @tparam Mode Strict if you want it to fail when there's a bad argument, or Lenient if you want to ignore bad arguments. (A missing required argument will return an empty map even on Lenient)
    * @return A Try on Strict.
    */
@@ -38,12 +42,11 @@ object Parser {
       val name = s"--${argument.name}="
       val index = content.indexOf(name)
       val sub = content.substring(index + name.length)
-      println(s"Sub for argument $argument: $sub")
       (argument, argument.argType.grab(sub))
     })
       .filter { case (_, opt) => opt.isDefined }
       .map { case (arg, opt) => (arg, arg.name, opt.get) }
-      .filter { case (arg, _, value) => if (!ignore) true else arg.allowedValues.contains(value) }
+      .filter { case (arg, _, value) => if (!ignore || arg.argType == UnitArg || arg.allowedValues.isEmpty) true else arg.allowedValues.contains(value) }
     val failedValues = options.filter(x => values.exists(y => x.name == y._2))
     if (values.size != filtered.size && !ignore) throw FailedValidationException(options.diff(failedValues))
     val improper = values.find { case (arg, _, value) => arg.allowedValues.nonEmpty && !arg.allowedValues.contains(value) }
@@ -52,7 +55,6 @@ object Parser {
       case None => new ParsedArgument(values.map { case (_, name, value) => (name, value) }.toMap)
     }
   } match {
-
     case Failure(_) if ignore => Success(new ParsedArgument(Map()))
     case x => x
   }
