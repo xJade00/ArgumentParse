@@ -8,18 +8,29 @@ A halfway decent CLI type argument parser for Scala.
 ```scala
 val content = """!ban @user --reason="Being a jerk to everyone" --days=7"""
 
-val options = Set(
-                Argument(name = reason, required = true, argType = StringArg),
-                Argument(name = days, argType = IntArg)
-              )
+val days = Argument[Int](name = "days")
+val reason = Argument[String](name = "reason", required = true)
 
-val parsed = Parser.parse(content, options)(Lenient)
-
-val days = parsed[Int]("days")
-val reason = parsed[String]("reason")
+val parsed = Parser.lenient(content, Set(days, reason))
 val user = ...
+// Do some checking to see if the reason exists, or use strict and check the Failure state
+ban(user, parsed(reason), parsed.get(days).getOrElse(0))
+```
 
-ban(user, reason, days)
+
+From Java:
+```java
+        String content = "!ban @user --reason=\"Being a jerk to everyone\" --days=7";
+
+        Argument<Integer> days = JavaApi.asInteger(new ArgumentBuider<>("days"));
+        Argument<String> reason = JavaApi.asString(new ArgumentBuider<String>("reason").required(true));
+        Set<Argument<?>> set = new HashSet<>();
+        set.add(days);
+        set.add(reason);
+        ParsedArgument parsed = Parser.lenient(content, JavaApi.toScalaSet(set));
+        System.out.println(parsed.apply(days));
+        System.out.println(parsed.apply(reason));
+        ban(user, parsed.apply(reason), parsed.getJava(days).orElse(0));
 ```
 
 
