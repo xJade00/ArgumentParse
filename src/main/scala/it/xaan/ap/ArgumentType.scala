@@ -1,5 +1,7 @@
 package it.xaan.ap
 
+import java.util.function.Predicate
+
 import scala.util.Try
 import scala.util.matching.Regex
 
@@ -44,6 +46,7 @@ abstract class ArgumentType[+T](val validator: String => Boolean, val converter:
   }
 }
 
+abstract class JavaArgumentType[+T](val validation: Predicate[String], override val converter: Parseable[T]) extends ArgumentType[T](x => validation.test(x), converter)
 
 object ArgumentType {
   val StringRegex = """"(\\"|[^"])*[^\\]""""

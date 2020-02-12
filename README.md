@@ -22,8 +22,8 @@ From Java:
 ```java
         String content = "!ban @user --reason=\"Being a jerk to everyone\" --days=7";
 
-        Argument<Integer> days = JavaApi.asInteger(new ArgumentBuider<>("days"));
-        Argument<String> reason = JavaApi.asString(new ArgumentBuider<String>("reason").required(true));
+        Argument<Integer> days = JavaApi.asInteger(new ArgumentBuilder<>("days"));
+        Argument<String> reason = JavaApi.asString(new ArgumentBuilder<String>("reason").required(true));
         Set<Argument<?>> set = new HashSet<>();
         set.add(days);
         set.add(reason);

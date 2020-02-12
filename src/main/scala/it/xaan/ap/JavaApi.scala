@@ -1,6 +1,9 @@
 package it.xaan.ap
 
+import java.util.function.Predicate
 import java.util.{Optional, Set => JSet}
+
+import it.xaan.ap.ArgumentType.StringArg
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Try
@@ -48,17 +51,17 @@ object JavaApi {
     override def find(str: String): String = ""
   }
 
-  def asInteger(builder: ArgumentBuilder[Integer]): Argument[Integer] = builder.build()
-  def asBoolean(builder: ArgumentBuilder[java.lang.Boolean]): Argument[java.lang.Boolean] = builder.build()
-  def asDouble(builder: ArgumentBuilder[java.lang.Double]): Argument[java.lang.Double] = builder.build()
-  def asLong(builder: ArgumentBuilder[java.lang.Long]): Argument[java.lang.Long] = builder.build()
-  def asFloat(builder: ArgumentBuilder[java.lang.Float]): Argument[java.lang.Float] = builder.build()
-  def asByte(builder: ArgumentBuilder[java.lang.Byte]): Argument[java.lang.Byte] = builder.build()
-  def asShort(builder: ArgumentBuilder[java.lang.Short]): Argument[java.lang.Short] = builder.build()
-  def asCharacter(builder: ArgumentBuilder[java.lang.Character]): Argument[java.lang.Character] = builder.build()
-  def asString(builder: ArgumentBuilder[String]): Argument[String] = builder.build()
-  def asVoid(builder: ArgumentBuilder[Void]): Argument[Void] = builder.build()
-
+  def asInteger(builder: ArgumentBuilder[Integer]): Argument[Integer] = asT(builder, IntArg)
+  def asBoolean(builder: ArgumentBuilder[java.lang.Boolean]): Argument[java.lang.Boolean] = asT(builder, BooleanArg)
+  def asDouble(builder: ArgumentBuilder[java.lang.Double]): Argument[java.lang.Double] = asT(builder, DoubleArg)
+  def asLong(builder: ArgumentBuilder[java.lang.Long]): Argument[java.lang.Long] = asT(builder, LongArg)
+  def asFloat(builder: ArgumentBuilder[java.lang.Float]): Argument[java.lang.Float] = asT(builder, FloatArg)
+  def asByte(builder: ArgumentBuilder[java.lang.Byte]): Argument[java.lang.Byte] = asT(builder, ByteArg)
+  def asShort(builder: ArgumentBuilder[java.lang.Short]): Argument[java.lang.Short] = asT(builder, ShortArg)
+  def asCharacter(builder: ArgumentBuilder[java.lang.Character]): Argument[java.lang.Character] = asT(builder, CharArg)
+  def asString(builder: ArgumentBuilder[String]): Argument[String] = asT(builder, StringArg)
+  def asVoid(builder: ArgumentBuilder[Void]): Argument[Void] = asT(builder, UnitArg)
+  def asT[T](builder: ArgumentBuilder[T], argumentType: ArgumentType[T]): Argument[T] = builder.build()(argumentType)
 
   def toScalaSet[T](set: JSet[T]): Set[T] = {
     val buffer = ListBuffer[T]()
@@ -72,5 +75,7 @@ object JavaApi {
       case None => Optional.empty()
     }
   }
+
+  def predicateToFunc[T](pred: Predicate[T]): T => Boolean = x => pred.test(x)
 
 }
