@@ -1,5 +1,7 @@
 package it.xaan.ap
 
+import java.util.Optional
+
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -25,19 +27,9 @@ class ParsedArgument(private val map: Map[String, Any]) {
    * @tparam T The type to cast to.
    * @return None if the key doesn't exist or it's not of the specified type, Some with the value if it does.
    */
-  def get[T](key: Argument[T]): PossibleArg[T] = Try(map(key.name).asInstanceOf[T]) match {
-    case Failure(exception) =>
-      exception.printStackTrace()
-      exception match {
-      case x: ParsingException =>
-        x match {
-          case ImproperValue(_, _) => InvalidType
-          case _ => NoArg
-        }
-      case _ => NoArg
-    }
-    case Success(value) => SomeArg(value)
-  }
+  def get[T](key: Argument[T]): Option[T] = Try(map(key.name).asInstanceOf[T]).toOption
+
+  def getJava[T](key: Argument[T]): Optional[T] = JavaApi.toJavaOptional(get(key))
 
   /**
    * Returns whether or not an argument is defined.
