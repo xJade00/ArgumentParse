@@ -44,6 +44,8 @@ MANIFEST.MF
 *.iws
 *.iml
 guilds/
+/Common/Common.iml
+./.idea/checkstyle-idea.xml
 
 ## Plugin-specific files:
 
