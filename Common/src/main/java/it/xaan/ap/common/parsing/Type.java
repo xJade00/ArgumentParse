@@ -1,21 +1,29 @@
-/**
- * ArgumentParse - Parsing CLI arguments in Java. Copyright © 2020 xaanit (shadowjacob1@gmail.com)
+/*
+ * ArgumentParse - Parsing CLI arguments in Java.
+ * Copyright © 2020 xaanit (shadowjacob1@gmail.com)
  *
- * <p>This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * <p>You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package it.xaan.ap.common.parsing;
 
-import it.xaan.ap.common.FailedValidation;
 import it.xaan.ap.common.data.UnvalidatedArgument;
+import it.xaan.ap.common.result.Error;
+import it.xaan.ap.common.result.FailedValidation;
+import it.xaan.ap.common.result.Null;
+import it.xaan.ap.common.result.Result;
+import it.xaan.ap.common.result.Success;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +62,7 @@ public final class Type<T> {
 
   /**
    * Constructs a new {@link Type} object. The main function of this class is to turn a {@link
-   * UnvalidatedArgument} object into a {@link ValidatedArgument} by using {@link
+   * UnvalidatedArgument} object into an instance of {@code T} by using {@link
    * #decode(UnvalidatedArgument)}. The {@link Predicate} passed to {@code validator} will determine
    * if it can be turned into a new instance of {@code T} without the {@link Function} passed to
    * {@code converter} throwing an Exception. <br>
@@ -82,20 +90,18 @@ public final class Type<T> {
   }
 
   /**
-   * Decodes a {@link UnvalidatedArgument} into a {@link ValidatedArgument}. If the {@link
-   * Predicate} returns false or the {@link Function} throws an exception, this method returns the
-   * {@link ValidatedArgument} in an exceptional state. If the {@link Function} returns null, this
-   * method returns the {@link ValidatedArgument} in a nulled state. Else this method returns a
-   * successful state.
+   * Decodes a {@link UnvalidatedArgument} into a {@link T}.
    *
    * @throws IllegalStateException When the combiner argument of {@link
    *     java.util.stream.Stream#reduce(Object, BiFunction, BinaryOperator)} is called, since it
    *     should never happen since it's not a parallel stream.
    * @param argument The argument to validate and decode.
-   * @return A never-null {@link ValidatedArgument} in either a successful, nulled, or exceptional
-   *     state.
+   * @return A never-null {@link Result}. If the {@link Predicate} returns false, the state is
+   *     {@link FailedValidation}. If the {@link Function} returns null, the state is {@link Null}.
+   *     If there is an exception thrown, the state is {@link Error}. And if nothing goes wrong the
+   *     state is {@link Success} containing an instance of {@code T}.
    */
-  public ValidatedArgument<T> decode(UnvalidatedArgument argument) {
+  public Result<T> decode(UnvalidatedArgument argument) {
     String filtered =
         Arrays.stream(getFilters())
             .reduce(
@@ -108,12 +114,12 @@ public final class Type<T> {
     T instance;
     try {
       boolean valid = getValidator().test(filtered);
-      if (!valid) throw new FailedValidation(String.format("Couldn't validate for %s", argument));
+      if (!valid) return Result.from(FailedValidation.from(argument));
       instance = getConverter().apply(filtered);
     } catch (Throwable exception) {
-      return ValidatedArgument.exception(exception);
+      return Result.from(Error.from(exception));
     }
-    return instance == null ? ValidatedArgument.nullable() : ValidatedArgument.success(instance);
+    return instance == null ? Result.from(Null.create()) : Result.from(Success.from(instance));
   }
 
   /**

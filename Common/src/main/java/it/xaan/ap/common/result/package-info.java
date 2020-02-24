@@ -18,7 +18,7 @@
 
 @ParametersAreNonnullByDefault
 @ReturnTypesAreNonNullByDefault
-package it.xaan.ap.common.data;
+package it.xaan.ap.common.result;
 
 import it.xaan.ap.common.ReturnTypesAreNonNullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;
