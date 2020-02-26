@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.xaan.ap.common.parsing;
 
 import java.util.function.Function;
@@ -32,19 +31,6 @@ public interface Filter extends Function<String, String> {
    * Alias for {@link String#trim()}.
    */
   Filter TRIM_SPACES = String::trim;
-
-  /**
-   * This function trims off any leading spaces the {@link String} may contain. It's equivalent to
-   * the psuedocode: <br>
-   * string.reverse().trim().reverse()
-   */
-  Filter REMOVE_SPACE_PREFIX =
-      str -> {
-        while (str.length() > 0 && str.charAt(0) == ' ') {
-          str = str.substring(1);
-        }
-        return str;
-      };
 
   /**
    * This trims any newlines that may occur at the end of the string. Newlines are defined as '\r'

@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.xaan.ap.common.data;
 
 import it.xaan.ap.common.parsing.Argument;
@@ -25,7 +24,6 @@ import it.xaan.ap.common.parsing.Argument;
  * extracted unvalidated value from the content. This value is still in it's {@link String} format
  * and needs to be converted with {@link it.xaan.ap.common.parsing.Type#decode(UnvalidatedArgument)}
  */
-@SuppressWarnings("WeakerAccess")
 public class UnvalidatedArgument {
 
   private final String name;

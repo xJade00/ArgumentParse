@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.xaan.ap.common.parsing;
 
 import static org.junit.Assert.assertEquals;
@@ -26,14 +25,8 @@ public class FilterTest {
 
   @Test
   public void testTrimSpaces() {
-    final String test = "Test             ";
+    final String test = "         Test             ";
     assertEquals("Test", Filter.TRIM_SPACES.filter(test));
-  }
-
-  @Test
-  public void testTrimFrontSpaces() {
-    final String test = "            Test";
-    assertEquals("Test", Filter.REMOVE_SPACE_PREFIX.filter(test));
   }
 
   @Test

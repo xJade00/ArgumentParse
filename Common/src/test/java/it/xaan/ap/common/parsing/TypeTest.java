@@ -15,23 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.xaan.ap.common.parsing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import it.xaan.ap.common.data.UnvalidatedArgument;
+import it.xaan.ap.common.result.Result;
+import it.xaan.ap.common.result.Success;
 import java.util.Objects;
 import org.junit.Test;
 
 public class TypeTest {
-  private final Type<String> test = new Type<>(Objects::nonNull, String::toLowerCase);
+  private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase);
+  private final Type<String> error =
+      new Type<>(
+          Objects::nonNull,
+          x -> {
+            throw new RuntimeException("Runtime exception thrown.");
+          });
+  private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null);
+  private final Type<String> failed =
+      new Type<>(
+          Objects::isNull,
+          x -> {
+            throw new IllegalStateException("Runtime exception thrown.");
+          });
   private final UnvalidatedArgument arg = UnvalidatedArgument.from("Name", "TESTING");
 
   @Test
   public void testType() {
-    // Result<ValidatedArgument<String>> testAgainst = test.decode(arg).get();
-    String testAgainst = "";
-    assertEquals("testing", testAgainst);
+    Result<String> result = success.decode(arg);
+    result.when(Success.type(), success -> assertEquals("testing", success.getElement()));
+    result.whenNot(Success.type(), state -> fail("State was " + state + ", not Success."));
   }
 }

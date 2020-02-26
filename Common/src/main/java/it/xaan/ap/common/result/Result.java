@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.xaan.ap.common.result;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@SuppressWarnings({"UncheckedCast"})
+@SuppressWarnings({"unused", "unchecked"})
 public class Result<T> {
   private final State<T> state;
 
@@ -33,7 +32,6 @@ public class Result<T> {
   public static <U> Result<U> from(State<U> state) {
     return new Result<>(state);
   }
-
 
   public <S extends State<T>, R extends ResultType<S>> boolean is(R result) {
     return getClass(result).map(clazz -> clazz.isAssignableFrom(state.getClass())).orElse(false);
@@ -47,10 +45,17 @@ public class Result<T> {
     return is(Error.type());
   }
 
-  public <S extends State<T>, R extends ResultType<S>> void on(R result, Consumer<S> consumer) {
+  public <S extends State<T>, R extends ResultType<S>> void when(R result, Consumer<S> consumer) {
     getClass(result)
         .filter(clazz -> this.state.getClass().isAssignableFrom(clazz))
         .ifPresent($ -> consumer.accept((S) this.state));
+  }
+
+  public <S extends State<T>, R extends ResultType<S>> void whenNot(
+      R result, Consumer<State<T>> consumer) {
+    getClass(result)
+        .filter(clazz -> !this.state.getClass().isAssignableFrom(clazz))
+        .ifPresent($ -> consumer.accept(this.state));
   }
 
   private <S extends State<T>, R extends ResultType<S>> Optional<Class<?>> getClass(R result) {
