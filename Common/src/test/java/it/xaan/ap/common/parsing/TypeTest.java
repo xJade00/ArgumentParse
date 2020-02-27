@@ -21,6 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import it.xaan.ap.common.data.UnvalidatedArgument;
+import it.xaan.ap.common.result.Error;
+import it.xaan.ap.common.result.FailedValidation;
+import it.xaan.ap.common.result.Null;
 import it.xaan.ap.common.result.Result;
 import it.xaan.ap.common.result.Success;
 import java.util.Objects;
@@ -44,9 +47,31 @@ public class TypeTest {
   private final UnvalidatedArgument arg = UnvalidatedArgument.from("Name", "TESTING");
 
   @Test
-  public void testType() {
+  public void testSuccess() {
     Result<String> result = success.decode(arg);
     result.when(Success.type(), success -> assertEquals("testing", success.getElement()));
     result.whenNot(Success.type(), state -> fail("State was " + state + ", not Success."));
   }
+
+  @Test
+  public void testError() {
+    Result<String> result = error.decode(arg);
+    result.when(Error.type(), error -> assertEquals("Runtime exception thrown.", error.getException().getMessage()));
+    result.whenNot(Error.type(), state -> fail("State was " + state + ", not Error."));
+  }
+
+  @Test
+  public void testNullable() {
+    Result<String> result = nullable.decode(arg);
+    result.when(Null.type(), $ -> {});
+    result.whenNot(Null.type(), state -> fail("State was " + state + ", not Null."));
+  }
+
+  @Test
+  public void testFailed() {
+    Result<String> result = failed.decode(arg);
+    result.when(FailedValidation.type(), failed -> assertEquals(arg,failed.getUnvalidated() ));
+    result.whenNot(FailedValidation.type(), state -> fail("State was " + state + ", not FailedValidation."));
+  }
+
 }

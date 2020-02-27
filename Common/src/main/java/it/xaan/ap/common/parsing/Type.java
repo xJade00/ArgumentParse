@@ -77,7 +77,7 @@ public final class Type<T> {
    * @param validator The predicate that specifies whether or not the string can be deserialized.
    * @param converter The function that takes in a string and returns an instance of the specified T
    *     or null if making an instance is impossible for the input.
-   * @param filters A list of filters that will transform the content to be easier to validate.
+   * @param filters A list of filters that will transform the content to be easier to validate. Order matters.
    */
   public Type(
       final Predicate<String> validator,
@@ -150,8 +150,7 @@ public final class Type<T> {
    * Getter for the {@link List} of {@link Filter}s that the content will be passed through before
    * being passed to {@link Type#getValidator()} and {@link Type#getConverter()}. <br>
    * The filters inside are guaranteed to never be null, and are nearly impossible to
-   * programmatically determine what they do. Order isn't guaranteed to be preserved through
-   * multiple calls to this method. <br>
+   * programmatically determine what they do.
    *
    * @return A never-null list of the filters the content will pass through.
    */
