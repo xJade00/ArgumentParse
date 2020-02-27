@@ -77,7 +77,8 @@ public final class Type<T> {
    * @param validator The predicate that specifies whether or not the string can be deserialized.
    * @param converter The function that takes in a string and returns an instance of the specified T
    *     or null if making an instance is impossible for the input.
-   * @param filters A list of filters that will transform the content to be easier to validate. Order matters.
+   * @param filters A list of filters that will transform the content to be easier to validate.
+   *     Order matters.
    */
   public Type(
       final Predicate<String> validator,

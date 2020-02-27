@@ -56,7 +56,9 @@ public class TypeTest {
   @Test
   public void testError() {
     Result<String> result = error.decode(arg);
-    result.when(Error.type(), error -> assertEquals("Runtime exception thrown.", error.getException().getMessage()));
+    result.when(
+        Error.type(),
+        error -> assertEquals("Runtime exception thrown.", error.getException().getMessage()));
     result.whenNot(Error.type(), state -> fail("State was " + state + ", not Error."));
   }
 
@@ -70,8 +72,8 @@ public class TypeTest {
   @Test
   public void testFailed() {
     Result<String> result = failed.decode(arg);
-    result.when(FailedValidation.type(), failed -> assertEquals(arg,failed.getUnvalidated() ));
-    result.whenNot(FailedValidation.type(), state -> fail("State was " + state + ", not FailedValidation."));
+    result.when(FailedValidation.type(), failed -> assertEquals(arg, failed.getUnvalidated()));
+    result.whenNot(
+        FailedValidation.type(), state -> fail("State was " + state + ", not FailedValidation."));
   }
-
 }

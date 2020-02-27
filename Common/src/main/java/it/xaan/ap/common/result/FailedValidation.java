@@ -34,7 +34,6 @@ public class FailedValidation<T> implements State<T> {
     return new ResultType<FailedValidation<E>>() {};
   }
 
-
   public UnvalidatedArgument getUnvalidated() {
     return unvalidated;
   }
@@ -56,5 +55,4 @@ public class FailedValidation<T> implements State<T> {
   public String toString() {
     return String.format("FailedValidation[unvalidated=%s]", this.unvalidated);
   }
-
 }
