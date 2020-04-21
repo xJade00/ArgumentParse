@@ -15,7 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.result;
+package it.xaan.ap.common.parsing;
 
-@SuppressWarnings("WeakerAcess")
-public abstract class ResultType<T> {}
+import it.xaan.ap.common.data.UnvalidatedArgument;
+
+public final class FailedValidationException extends RuntimeException {
+  private final UnvalidatedArgument argument;
+  private final String input;
+
+  public FailedValidationException(final UnvalidatedArgument argument, final String input) {
+    super(String.format("Couldn't validated argument %s with input %s", argument, input));
+    this.argument = argument;
+    this.input = input;
+  }
+
+  public UnvalidatedArgument getArgument() {
+    return argument;
+  }
+
+  public String getInput() {
+    return input;
+  }
+}

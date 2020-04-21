@@ -18,62 +18,67 @@
 package it.xaan.ap.common.parsing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import it.xaan.ap.common.data.UnvalidatedArgument;
-import it.xaan.ap.common.result.Error;
-import it.xaan.ap.common.result.FailedValidation;
-import it.xaan.ap.common.result.Null;
-import it.xaan.ap.common.result.Result;
-import it.xaan.ap.common.result.Success;
+import it.xaan.random.result.Result;
 import java.util.Objects;
 import org.junit.Test;
 
 public class TypeTest {
   private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase);
   private final Type<String> error =
-      new Type<>(
-          Objects::nonNull,
-          x -> {
-            throw new RuntimeException("Runtime exception thrown.");
-          });
+    new Type<>(
+      Objects::nonNull,
+      x -> {
+        throw new RuntimeException("Runtime exception thrown.");
+      });
   private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null);
   private final Type<String> failed =
-      new Type<>(
-          Objects::isNull,
-          x -> {
-            throw new IllegalStateException("Runtime exception thrown.");
-          });
+    new Type<>(
+      Objects::isNull,
+      x -> {
+        throw new IllegalStateException("Runtime exception thrown.");
+      });
   private final UnvalidatedArgument arg = UnvalidatedArgument.from("Name", "TESTING");
 
   @Test
   public void testSuccess() {
     Result<String> result = success.decode(arg);
-    result.when(Success.type(), success -> assertEquals("testing", success.getElement()));
-    result.whenNot(Success.type(), state -> fail("State was " + state + ", not Success."));
+    result.onSuccess(success -> assertEquals("testing", success));
+    result.onError(Object.class, $ -> fail("State was Error, not Success."));
+    result.onEmpty(() -> fail("State was empty, not Success."));
   }
 
   @Test
   public void testError() {
     Result<String> result = error.decode(arg);
-    result.when(
-        Error.type(),
-        error -> assertEquals("Runtime exception thrown.", error.getException().getMessage()));
-    result.whenNot(Error.type(), state -> fail("State was " + state + ", not Error."));
+    result.onError(RuntimeException.class, error -> assertEquals("Runtime exception thrown.", error.getMessage()));
+    result.onSuccess($ -> fail("State was Success, not Error."));
+    result.onEmpty(() -> fail("State was Success, not Error."));
   }
 
   @Test
   public void testNullable() {
     Result<String> result = nullable.decode(arg);
-    result.when(Null.type(), $ -> {});
-    result.whenNot(Null.type(), state -> fail("State was " + state + ", not Null."));
+    assertThrows(RuntimeException.class, () -> result.onEmpty(() -> {
+      throw new RuntimeException("");
+    }));
+    result.onSuccess($ -> fail("State was Success, not Empty"));
+    result.onError(Object.class, $ -> fail("State was Error, not Empty."));
   }
 
   @Test
   public void testFailed() {
     Result<String> result = failed.decode(arg);
-    result.when(FailedValidation.type(), failed -> assertEquals(arg, failed.getUnvalidated()));
-    result.whenNot(
-        FailedValidation.type(), state -> fail("State was " + state + ", not FailedValidation."));
+    result.onError(FailedValidationException.class, failed -> assertEquals(arg, failed.getArgument()));
+    result.onError(Exception.class, ex -> {
+      if (!(ex instanceof FailedValidationException)) {
+        fail("State was error, but exception instead was: " + ex.getCause().getClass().getName());
+      }
+    });
+    result.onSuccess($ -> fail("State was Success, not Error."));
+    result.onEmpty(() -> fail("State was Success, not Error."));
   }
 }

@@ -18,11 +18,7 @@
 package it.xaan.ap.common.parsing;
 
 import it.xaan.ap.common.data.UnvalidatedArgument;
-import it.xaan.ap.common.result.Error;
-import it.xaan.ap.common.result.FailedValidation;
-import it.xaan.ap.common.result.Null;
-import it.xaan.ap.common.result.Result;
-import it.xaan.ap.common.result.Success;
+import it.xaan.random.result.Result;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -76,14 +72,14 @@ public final class Type<T> {
    *
    * @param validator The predicate that specifies whether or not the string can be deserialized.
    * @param converter The function that takes in a string and returns an instance of the specified T
-   *     or null if making an instance is impossible for the input.
-   * @param filters A list of filters that will transform the content to be easier to validate.
-   *     Order matters.
+   *                  or null if making an instance is impossible for the input.
+   * @param filters   A list of filters that will transform the content to be easier to validate.
+   *                  Order matters.
    */
   public Type(
-      final Predicate<String> validator,
-      final Function<String, T> converter,
-      final Filter... filters) {
+    final Predicate<String> validator,
+    final Function<String, T> converter,
+    final Filter... filters) {
     this.validator = validator;
     this.converter = converter;
     this.filters = filters;
@@ -92,34 +88,35 @@ public final class Type<T> {
   /**
    * Decodes a {@link UnvalidatedArgument} into a {@link T}.
    *
-   * @throws IllegalStateException When the combiner argument of {@link
-   *     java.util.stream.Stream#reduce(Object, BiFunction, BinaryOperator)} is called, since it
-   *     should never happen since it's not a parallel stream.
    * @param argument The argument to validate and decode.
-   * @return A never-null {@link Result}. If the {@link Predicate} returns false, the state is
-   *     {@link FailedValidation}. If the {@link Function} returns null, the state is {@link Null}.
-   *     If there is an exception thrown, the state is {@link Error}. And if nothing goes wrong the
-   *     state is {@link Success} containing an instance of {@code T}.
+   *
+   * @return A never-null {@link Result}. If the {@link Predicate} returns false, the result
+   * contains a {@link FailedValidationException} as the error. If the {@link Function} returns
+   * null, the Result will be empty. If an error is thrown the result contains it as an error.
+   *
+   * @throws IllegalStateException When the combiner argument of {@link
+   *                               java.util.stream.Stream#reduce(Object, BiFunction, BinaryOperator)} is called, since it
+   *                               should never happen since it's not a parallel stream.
    */
   public Result<T> decode(UnvalidatedArgument argument) {
     String filtered =
-        Arrays.stream(getFilters())
-            .reduce(
-                argument.getValue(),
-                (accumulator, filter) -> filter.filter(accumulator),
-                (x, y) -> {
-                  throw new IllegalStateException("Should never get here. x: " + x + ", y: " + y);
-                });
+      Arrays.stream(getFilters())
+        .reduce(
+          argument.getValue(),
+          (accumulator, filter) -> filter.filter(accumulator),
+          (x, y) -> {
+            throw new IllegalStateException("Should never get here. x: " + x + ", y: " + y);
+          });
 
     T instance;
     try {
       boolean valid = getValidator().test(filtered);
-      if (!valid) return Result.from(FailedValidation.from(argument));
+      if (!valid) return Result.error(new FailedValidationException(argument, filtered));
       instance = getConverter().apply(filtered);
     } catch (Throwable exception) {
-      return Result.from(Error.from(exception));
+      return Result.error(exception);
     }
-    return instance == null ? Result.from(Null.create()) : Result.from(Success.from(instance));
+    return Result.ofNullable(instance);
   }
 
   /**
@@ -128,7 +125,7 @@ public final class Type<T> {
    * Type#getConverter()} without worrying about any sort of Exception.
    *
    * @return The {@link Predicate} that takes in a {@link String} and returns true if it can be
-   *     safely converted with {@link Type#getConverter()}, otherwise false.
+   * safely converted with {@link Type#getConverter()}, otherwise false.
    */
   public Predicate<String> getValidator() {
     return validator;
@@ -141,7 +138,7 @@ public final class Type<T> {
    * may want to return null.
    *
    * @return The {@link Function} that takes in a {@link String} and returns a possibly-null {@link
-   *     T}.
+   * T}.
    */
   public Function<String, T> getConverter() {
     return converter;
