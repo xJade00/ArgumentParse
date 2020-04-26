@@ -26,7 +26,7 @@ public class UnvalidatedArgumentTest {
   private static final UnvalidatedArgument first = UnvalidatedArgument.from("name", "value");
   private static final UnvalidatedArgument second = UnvalidatedArgument.from("name", "value");
   private static final UnvalidatedArgument third =
-      UnvalidatedArgument.from("name", "different value");
+    UnvalidatedArgument.from("name", "different value");
 
   @Test
   public void checkData() {

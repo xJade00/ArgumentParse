@@ -19,5 +19,5 @@
 @ReturnTypesAreNonNullByDefault
 package it.xaan.ap.common.parsing;
 
-import it.xaan.ap.common.ReturnTypesAreNonNullByDefault;
+import it.xaan.random.core.ReturnTypesAreNonNullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;

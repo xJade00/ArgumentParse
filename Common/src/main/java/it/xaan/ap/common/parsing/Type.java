@@ -41,10 +41,13 @@ import javax.annotation.Nonnull;
  * - {@link Byte} <br>
  * - {@link String} <br>
  * - {@link List} <br>
+ * - {@link Void} <br>
  *
  * <p>Note that all boxed types for primitives can be safely extracted to their normal primitive
  * types as the instance from {@link Type#getConverter()} is guaranteed to be @{@link Nonnull} for
  * all default implementations. <br>
+ * <p>
+ * All instances of this class should be singletons. See the {@link Types} class for examples.
  *
  * @param <T> The type to deserialize to.
  */
@@ -128,7 +131,7 @@ public final class Type<T> {
    * safely converted with {@link Type#getConverter()}, otherwise false.
    */
   public Predicate<String> getValidator() {
-    return validator;
+    return this.validator;
   }
 
   /**
@@ -141,7 +144,7 @@ public final class Type<T> {
    * T}.
    */
   public Function<String, T> getConverter() {
-    return converter;
+    return this.converter;
   }
 
   /**
@@ -153,6 +156,6 @@ public final class Type<T> {
    * @return A never-null list of the filters the content will pass through.
    */
   public Filter[] getFilters() {
-    return filters;
+    return this.filters;
   }
 }

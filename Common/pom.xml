@@ -1,71 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>Common</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <java>
+            <googleJavaFormat>
+              <style>GOOGLE</style>
+              <version>1.5</version>
+            </googleJavaFormat>
+            <licenseHeader>
+              <file>${basedir}\header.txt</file>
+            </licenseHeader>
+            <removeUnusedImports/>
+          </java>
+        </configuration>
+        <groupId>com.diffplug.spotless</groupId>
+        <version>${spotless.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+      <version>4.13</version>
+    </dependency>
+    <dependency>
+      <artifactId>jsr305</artifactId>
+      <groupId>com.google.code.findbugs</groupId>
+      <version>3.0.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>random-result</artifactId>
+      <groupId>it.xaan</groupId>
+      <version>1.1.0</version>
+    </dependency>
+  </dependencies>
+  <groupId>it.xaan.ap</groupId>
+
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>it.xaan.ap</groupId>
-  <artifactId>Common</artifactId>
-  <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <spotless.version>1.27.0</spotless.version>
   </properties>
 
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>3.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>3.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>it.xaan</groupId>
-      <artifactId>random-result</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.diffplug.spotless</groupId>
-      <artifactId>spotless-maven-plugin</artifactId>
-      <version>${spotless.version}</version>
-    </dependency>
-  </dependencies>
-
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>${spotless.version}</version>
-        <configuration>
-          <java>
-            <licenseHeader>
-              <file>${basedir}\header.txt</file>
-            </licenseHeader>
-            <googleJavaFormat>
-              <version>1.5</version>
-              <style>GOOGLE</style>
-            </googleJavaFormat>
-            <removeUnusedImports/>
-          </java>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <version>1.0-SNAPSHOT</version>
 </project>

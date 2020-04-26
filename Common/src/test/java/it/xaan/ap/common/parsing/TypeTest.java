@@ -45,7 +45,7 @@ public class TypeTest {
 
   @Test
   public void testSuccess() {
-    Result<String> result = success.decode(arg);
+    Result<String> result = this.success.decode(this.arg);
     result.onSuccess(success -> assertEquals("testing", success));
     result.onError(Object.class, $ -> fail("State was Error, not Success."));
     result.onEmpty(() -> fail("State was empty, not Success."));
@@ -53,7 +53,7 @@ public class TypeTest {
 
   @Test
   public void testError() {
-    Result<String> result = error.decode(arg);
+    Result<String> result = this.error.decode(this.arg);
     result.onError(RuntimeException.class, error -> assertEquals("Runtime exception thrown.", error.getMessage()));
     result.onSuccess($ -> fail("State was Success, not Error."));
     result.onEmpty(() -> fail("State was Success, not Error."));
@@ -61,7 +61,7 @@ public class TypeTest {
 
   @Test
   public void testNullable() {
-    Result<String> result = nullable.decode(arg);
+    Result<String> result = this.nullable.decode(this.arg);
     assertThrows(RuntimeException.class, () -> result.onEmpty(() -> {
       throw new RuntimeException("");
     }));
@@ -71,8 +71,8 @@ public class TypeTest {
 
   @Test
   public void testFailed() {
-    Result<String> result = failed.decode(arg);
-    result.onError(FailedValidationException.class, failed -> assertEquals(arg, failed.getArgument()));
+    Result<String> result = this.failed.decode(this.arg);
+    result.onError(FailedValidationException.class, failed -> assertEquals(this.arg, failed.getArgument()));
     result.onError(Exception.class, ex -> {
       if (!(ex instanceof FailedValidationException)) {
         fail("State was error, but exception instead was: " + ex.getCause().getClass().getName());

@@ -30,10 +30,10 @@ public final class FailedValidationException extends RuntimeException {
   }
 
   public UnvalidatedArgument getArgument() {
-    return argument;
+    return this.argument;
   }
 
   public String getInput() {
-    return input;
+    return this.input;
   }
 }

@@ -15,25 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap;
+package it.xaan.ap.common.parsing;
 
-import it.xaan.ap.common.data.UnvalidatedArgumentTest;
-import it.xaan.ap.common.parsing.FilterTest;
-import it.xaan.ap.common.parsing.TypeTest;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
+import it.xaan.ap.common.data.Argument;
+import it.xaan.random.result.Result;
+import java.util.Set;
 
-public class TestRunner {
-
-  public static void main(String[] args) {
-    Result result =
-        JUnitCore.runClasses(FilterTest.class, UnvalidatedArgumentTest.class, TypeTest.class);
-
-    for (Failure failure : result.getFailures()) {
-      System.out.println(String.format("Trace: %s", failure.getTrimmedTrace()));
-    }
-
-    System.out.println(result.wasSuccessful());
-  }
+public interface Parser<T> {
+  Result<T> parse(final Set<Argument<?>> arguments, String content);
 }

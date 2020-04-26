@@ -17,8 +17,6 @@
  */
 package it.xaan.ap.common.data;
 
-import it.xaan.ap.common.parsing.Argument;
-
 /**
  * Represents an unvalidated {@link Argument}. It contains the unique name of the Argument and the
  * extracted unvalidated value from the content. This value is still in it's {@link String} format
@@ -32,7 +30,7 @@ public class UnvalidatedArgument {
   /**
    * Constructs a new {@link UnvalidatedArgument}. This is simply a holder for data.
    *
-   * @param name The unique name of the {@link Argument}.
+   * @param name  The unique name of the {@link Argument}.
    * @param value The unvalidated, unfiltered value from the content.
    */
   private UnvalidatedArgument(String name, String value) {
@@ -43,7 +41,7 @@ public class UnvalidatedArgument {
   /**
    * Constructs a new {@link UnvalidatedArgument}. This is simply a holder for data.
    *
-   * @param name The unique name of the {@link Argument}.
+   * @param name  The unique name of the {@link Argument}.
    * @param value The unvalidated, unfiltered value from the content.
    */
   public static UnvalidatedArgument from(final String name, final String value) {
@@ -56,7 +54,7 @@ public class UnvalidatedArgument {
    * @return The never-null name representing the {@link Argument}.
    */
   public String getName() {
-    return name;
+    return this.name;
   }
 
   /**
@@ -65,7 +63,7 @@ public class UnvalidatedArgument {
    * @return The unvalidated value extracted from the content.
    */
   public String getValue() {
-    return value;
+    return this.value;
   }
 
   @Override

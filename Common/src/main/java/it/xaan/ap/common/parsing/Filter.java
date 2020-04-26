@@ -37,13 +37,13 @@ public interface Filter extends Function<String, String> {
    * or '\n'.
    */
   Filter TRIM_NEWLINES =
-      str -> {
-        str = new StringBuilder(str).reverse().toString();
-        while (str.length() > 0 && (str.charAt(0) == '\r' || str.charAt(0) == '\n')) {
-          str = str.substring(1);
-        }
-        return new StringBuilder(str).reverse().toString();
-      };
+    str -> {
+      str = new StringBuilder(str).reverse().toString();
+      while (str.length() > 0 && (str.charAt(0) == '\r' || str.charAt(0) == '\n')) {
+        str = str.substring(1);
+      }
+      return new StringBuilder(str).reverse().toString();
+    };
 
   /**
    * Converts the passed {@link String} into one that is more usable for parsing. <br>
