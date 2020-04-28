@@ -23,10 +23,8 @@ import it.xaan.ap.common.data.ParsedArgument;
 import it.xaan.ap.common.data.ParsedPositionalArguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
-import it.xaan.ap.common.parsing.Types;
 import it.xaan.ap.common.parsing.options.MissingArgsStrategy;
 import it.xaan.ap.common.parsing.options.Options;
-import it.xaan.ap.common.parsing.options.OptionsBuilder;
 import it.xaan.random.result.Result;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,19 +76,5 @@ public final class PositionalParser implements Parser<ParsedPositionalArguments>
     } catch (Exception ex) {
       return Result.error(ex);
     }
-  }
-
-  public static void main(String[] args) {
-    String test = "!ban 123 \"Being a jerk to everyone\" true";
-    Argument<Integer> user = new Argument<>(Types.INTEGER_TYPE, "1", true);
-    Argument<Boolean> clear = new Argument<>(Types.BOOLEAN_TYPE, "3", false);
-    Argument<String> reason = new Argument<>(Types.STRING_TYPE, "2", false);
-    //Argument<Void> output = new Argument<>(Types.VOID_TYPE, "output", false);
-
-    Parser<ParsedPositionalArguments> parser = new PositionalParser();
-    Result<ParsedPositionalArguments> result = parser.parse(Argument.collection(ArrayList::new, user, clear, reason), test, new OptionsBuilder().build());
-    result.onSuccess(System.out::println)
-      .onError(Exception.class, Exception::printStackTrace)
-      .onEmpty(() -> System.out.println("was empty?"));
   }
 }
