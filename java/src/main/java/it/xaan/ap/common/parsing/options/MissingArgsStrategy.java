@@ -17,21 +17,7 @@
  */
 package it.xaan.ap.common.parsing.options;
 
-public final class OptionsBuilder {
-  private String prefix = "--";
-  private MissingPermissionsFailure namedFail = MissingPermissionsFailure.TOTAL;
-
-  public OptionsBuilder withPrefix(String prefix) {
-    this.prefix = prefix;
-    return this;
-  }
-
-  public OptionsBuilder withNamedFail(MissingPermissionsFailure namedFail) {
-    this.namedFail = namedFail;
-    return this;
-  }
-
-  public Options build() {
-    return new Options(this.prefix, this.namedFail);
-  }
+public enum MissingArgsStrategy {
+  QUICK,
+  TOTAL
 }

@@ -20,22 +20,24 @@ package it.xaan.ap.common.parsing.parsers;
 import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.data.MissingArgumentsException;
 import it.xaan.ap.common.data.ParsedArgument;
-import it.xaan.ap.common.data.ParsedArguments;
+import it.xaan.ap.common.data.ParsedNameAguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
-import it.xaan.ap.common.parsing.options.MissingPermissionsFailure;
+import it.xaan.ap.common.parsing.options.MissingArgsStrategy;
 import it.xaan.ap.common.parsing.options.Options;
 import it.xaan.random.result.Result;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class NamedParser implements Parser<ParsedArguments> {
+public final class NamedParser implements Parser<ParsedNameAguments> {
 
   @Override
-  public Result<ParsedArguments> parse(Set<Argument<?>> arguments, String content, Options options) {
+  public Result<ParsedNameAguments> parse(Collection<Argument<?>> arguments, String content, Options options) {
+    arguments = new HashSet<>(arguments);
     try {
       final List<ParsedArgument<?>> parsed = new ArrayList<>();
       final List<Argument<?>> missing = new ArrayList<>();
@@ -55,7 +57,7 @@ public final class NamedParser implements Parser<ParsedArguments> {
         final Matcher matcher = pattern.matcher(content);
         if (!matcher.find()) {
           missing.add(argument);
-          if (options.getMissingPermissionsFailure() == MissingPermissionsFailure.TOTAL) {
+          if (options.getMissingArgsStrategy() == MissingArgsStrategy.TOTAL) {
             continue;
           } else {
             break;
@@ -82,7 +84,7 @@ public final class NamedParser implements Parser<ParsedArguments> {
       if (!missing.isEmpty()) {
         throw new MissingArgumentsException(missing);
       }
-      return Result.of(new ParsedArguments((parsed)));
+      return Result.of(new ParsedNameAguments(parsed));
     } catch (Exception ex) {
       return Result.error(ex);
     }

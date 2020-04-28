@@ -20,9 +20,9 @@ package it.xaan.ap.common.data;
 import it.xaan.ap.common.parsing.Type;
 import it.xaan.ap.common.parsing.Types;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Represents a possible Argument.
@@ -55,8 +55,10 @@ public class Argument<T> {
     this.voided = type == Types.VOID_TYPE;
   }
 
-  public static Set<Argument<?>> set(Argument<?>... elements) {
-    return new HashSet<>(Arrays.asList(elements));
+  public static <T extends Collection<Argument<?>>> T collection(Supplier<T> supplier, Argument<?>... elements) {
+    T collection = supplier.get();
+    collection.addAll(Arrays.asList(elements));
+    return collection;
   }
 
   public Type<T> getType() {

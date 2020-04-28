@@ -15,22 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.options;
+package it.xaan.ap.common.parsing;
 
-public class Options {
-  private final String prefix;
-  private final MissingPermissionsFailure missingPermissionsFailure;
+import it.xaan.ap.common.data.Argument;
+import it.xaan.ap.common.parsing.options.Options;
+import it.xaan.random.result.Result;
+import java.util.Collection;
 
-  public Options(String prefix, MissingPermissionsFailure missingPermissionsFailure) {
-    this.prefix = prefix;
-    this.missingPermissionsFailure = missingPermissionsFailure;
-  }
-
-  public String getPrefix() {
-    return this.prefix;
-  }
-
-  public MissingPermissionsFailure getMissingPermissionsFailure() {
-    return this.missingPermissionsFailure;
-  }
+public interface Parser<T> {
+  Result<T> parse(Collection<Argument<?>> arguments, String content, Options options);
 }

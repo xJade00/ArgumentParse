@@ -15,13 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing;
+package it.xaan.ap.common.parsing.options;
 
-import it.xaan.ap.common.data.Argument;
-import it.xaan.ap.common.parsing.options.Options;
-import it.xaan.random.result.Result;
-import java.util.Set;
+public class Options {
+  private final String prefix;
+  private final MissingArgsStrategy missingArgsStrategy;
 
-public interface Parser<T> {
-  Result<T> parse(final Set<Argument<?>> arguments, String content, Options options);
+  public Options(String prefix, MissingArgsStrategy missingArgsStrategy) {
+    this.prefix = prefix;
+    this.missingArgsStrategy = missingArgsStrategy;
+  }
+
+  public String getPrefix() {
+    return this.prefix;
+  }
+
+  public MissingArgsStrategy getMissingArgsStrategy() {
+    return this.missingArgsStrategy;
+  }
 }

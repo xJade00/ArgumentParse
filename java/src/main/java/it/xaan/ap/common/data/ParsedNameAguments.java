@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
  * Represents a list of ParsedArguments by name.
  */
 @SuppressWarnings("WeakerAccess")
-public final class ParsedArguments {
+public final class ParsedNameAguments {
   private final Map<String, Object> backing = new HashMap<>();
 
   /**
@@ -39,7 +39,7 @@ public final class ParsedArguments {
    *
    * @throws IllegalArgumentException When an argument with a null name is passed.
    */
-  public ParsedArguments(List<ParsedArgument<?>> args) {
+  public ParsedNameAguments(List<ParsedArgument<?>> args) {
     for (ParsedArgument<?> arg : args) {
       if (arg.getName() == null) {
         throw new IllegalArgumentException("Arguments can not have null names.");
@@ -81,14 +81,13 @@ public final class ParsedArguments {
    * @return {@code null} if {@link #exists(Argument)} returns false, otherwise the value.
    */
   @Nullable
-  @SuppressWarnings({"unchecked", "ConstantConditions"})
+  @SuppressWarnings({"unchecked"})
   public <T> T get(Argument<T> argument) {
     try {
       return argument.getType() == Types.VOID_TYPE ? null : (T) this.backing.get(argument.getName().toLowerCase());
     } catch (ClassCastException ignored) {
       throw new ClassCastException("You should not be seeing this. If you do, please open a bug report. Tried to cast to " +
         argument.getName() + " with the value in the backing map being " + this.backing.get(argument.getName()));
-
     }
   }
 
@@ -100,8 +99,8 @@ public final class ParsedArguments {
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
-    if (!(obj instanceof ParsedArguments)) return false;
-    ParsedArguments other = (ParsedArguments) obj;
+    if (!(obj instanceof ParsedNameAguments)) return false;
+    ParsedNameAguments other = (ParsedNameAguments) obj;
     return Objects.equals(this.backing, other.backing);
   }
 
