@@ -15,25 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing;
+package it.xaan.ap.common.data;
 
-import it.xaan.ap.common.data.UnvalidatedArgument;
+import java.util.Collections;
+import java.util.List;
 
-public final class FailedValidationException extends RuntimeException {
-  private final UnvalidatedArgument argument;
-  private final String input;
+public final class MissingArgumentsException extends RuntimeException {
+  private final List<Argument<?>> list;
 
-  public FailedValidationException(final UnvalidatedArgument argument, final String input) {
-    super(String.format("Couldn't validated argument %s with input %s", argument, input));
-    this.argument = argument;
-    this.input = input;
+  public MissingArgumentsException(List<Argument<?>> list) {
+    super("Missing arguments: " + list);
+    this.list = Collections.unmodifiableList(list);
   }
 
-  public UnvalidatedArgument getArgument() {
-    return this.argument;
-  }
-
-  public String getInput() {
-    return this.input;
+  public List<Argument<?>> getList() {
+    return this.list;
   }
 }

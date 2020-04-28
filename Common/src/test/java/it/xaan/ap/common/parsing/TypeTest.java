@@ -21,26 +21,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
+import it.xaan.ap.common.data.FailedValidationException;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.random.result.Result;
 import java.util.Objects;
 import org.junit.Test;
 
 public class TypeTest {
-  private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase);
+  private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase, null);
   private final Type<String> error =
     new Type<>(
       Objects::nonNull,
       x -> {
         throw new RuntimeException("Runtime exception thrown.");
-      });
-  private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null);
+      }, null);
+  private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null, null);
   private final Type<String> failed =
     new Type<>(
       Objects::isNull,
       x -> {
         throw new IllegalStateException("Runtime exception thrown.");
-      });
+      }, null);
   private final UnvalidatedArgument arg = UnvalidatedArgument.from("Name", "TESTING");
 
   @Test

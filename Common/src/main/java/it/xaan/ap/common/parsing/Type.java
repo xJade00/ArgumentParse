@@ -17,16 +17,19 @@
  */
 package it.xaan.ap.common.parsing;
 
+import it.xaan.ap.common.data.FailedValidationException;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.random.result.Result;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Represents a Type that you can deserialize a string to. <br>
@@ -48,6 +51,10 @@ import javax.annotation.Nonnull;
  * all default implementations. <br>
  * <p>
  * All instances of this class should be singletons. See the {@link Types} class for examples.
+ * <br>
+ * It is important to note that the {@link Types#VOID_TYPE} is hard-coded into the application. If
+ * you want an argument that takes in no value, such as a {@code --version} then you must use that.
+ * Using your own void type will not work, as java has no easy way to see the generics of a type.
  *
  * @param <T> The type to deserialize to.
  */
@@ -57,6 +64,7 @@ public final class Type<T> {
   private final Predicate<String> validator;
   private final Function<String, T> converter;
   private final Filter[] filters;
+  private final String regex;
 
   /**
    * Constructs a new {@link Type} object. The main function of this class is to turn a {@link
@@ -76,15 +84,20 @@ public final class Type<T> {
    * @param validator The predicate that specifies whether or not the string can be deserialized.
    * @param converter The function that takes in a string and returns an instance of the specified T
    *                  or null if making an instance is impossible for the input.
+   * @param regex     The regex to match it, this is used in combo with validator and should not replace it.
+   *                  This is simply used to find the argument, not check that it's valid. For instance,
+   *                  a regex for {@code int} is {@code \d+}, even though you could input {@code 2147483648} which
+   *                  is normally outside the range. Null is the same as {@code .+}.
    * @param filters   A list of filters that will transform the content to be easier to validate.
-   *                  Order matters.
    */
   public Type(
     final Predicate<String> validator,
     final Function<String, T> converter,
+    @Nullable final String regex,
     final Filter... filters) {
     this.validator = validator;
     this.converter = converter;
+    this.regex = regex == null ? ".+" : regex;
     this.filters = filters;
   }
 
@@ -157,5 +170,24 @@ public final class Type<T> {
    */
   public Filter[] getFilters() {
     return this.filters;
+  }
+
+  /**
+   * Getter for the regex of this type, aka what it can accept. If null was originally passed
+   *
+   * @return The regex for this type, for gathering.
+   */
+  public String getRegex() {
+    return this.regex;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.filters, this.converter, this.regex, this.validator);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Type[regex=%s, object_super=%s]", this.regex, super.toString());
   }
 }

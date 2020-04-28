@@ -17,6 +17,7 @@
  */
 package it.xaan.ap.common.data;
 
+import it.xaan.ap.common.parsing.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public final class ParsedArguments {
    * @return {@code false} if {@link #get(Argument)} would return null, {@code true} otherwise.
    */
   public boolean exists(Argument<?> argument) {
-    return getOpt(argument).isPresent();
+    return argument.getType() == Types.VOID_TYPE ? this.backing.containsKey(argument.getName()) : getOpt(argument).isPresent();
   }
 
   /**
@@ -83,7 +84,7 @@ public final class ParsedArguments {
   @SuppressWarnings({"unchecked", "ConstantConditions"})
   public <T> T get(Argument<T> argument) {
     try {
-      return (T) this.backing.get(argument.getName().toLowerCase());
+      return argument.getType() == Types.VOID_TYPE ? null : (T) this.backing.get(argument.getName().toLowerCase());
     } catch (ClassCastException ignored) {
       throw new ClassCastException("You should not be seeing this. If you do, please open a bug report. Tried to cast to " +
         argument.getName() + " with the value in the backing map being " + this.backing.get(argument.getName()));

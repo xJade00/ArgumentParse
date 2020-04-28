@@ -18,84 +18,81 @@
 package it.xaan.ap.common.parsing.parsers;
 
 import it.xaan.ap.common.data.Argument;
+import it.xaan.ap.common.data.MissingArgumentsException;
 import it.xaan.ap.common.data.ParsedArgument;
 import it.xaan.ap.common.data.ParsedArguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
+import it.xaan.ap.common.parsing.Types;
 import it.xaan.random.result.Result;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class NamedParser implements Parser<ParsedArguments> {
 
-  private int findWhere(String str, Predicate<Character> pred) {
-    for (int i = 0; i < str.length(); i++) {
-      if (pred.test(str.charAt(i))) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   @Override
-  public Result<ParsedArguments> parse(final Set<Argument<?>> arguments, String content) {
+  public Result<ParsedArguments> parse(Set<Argument<?>> arguments, String content) {
     try {
-      // Faster lookup, memory vs speed. This will take up twice the amount of memory
-      // But for many arguments it'll be much faster. This is
-      final Map<String, Argument<?>> mapped = new HashMap<>();
-      for (Argument<?> argument : arguments) {
-        mapped.put(argument.getName(), argument);
-      }
-      final Set<UnvalidatedArgument> unvalidated = new HashSet<>();
-      int index = content.indexOf("--");
-      while (index != -1) {
-        // "--".indexOf("--") returns 2
-        // "--".substring(2) returns ""
-        // We can always safely index + 2
-        content = content.substring(index + 2);
-        int equals = content.indexOf('=');
-        // TODO: Voided arguments?
-        // TODO: findWhere can help above.
-        if (equals == -1) break;
-        String name = content.substring(0, equals).trim();
-        // Easiest to just trim stuff.
-        content = content.substring(name.length() + 1).trim();
-        index = content.indexOf("--");
-        // If it's empty at this point, someone did "--name=" which is invalid, and so we no longer care
-        // if index of "--" is -1, there is no further commands
-        // TODO: BUG? If you do "--name="Hello--world" it'll fail, it'll store
-        // TODO: UnvalidatedArgument[name=name,value=Hello] and then fail.
-        if (!content.isEmpty()) {
-          // If it's -1, we just take the rest of the string.
-          int sub = index == -1 ? content.length() : index;
-          String value = content.substring(0, sub);
-          unvalidated.add(UnvalidatedArgument.from(name, value));
-        }
-      }
-
       final List<ParsedArgument<?>> parsed = new ArrayList<>();
-      for (UnvalidatedArgument arg : unvalidated) {
-        final Argument<?> argument = mapped.get(arg.getName());
-        // If it's null, that means there's no argument we care about there.
-        if (argument == null) continue;
-        Result<?> result = argument.getType().decode(arg);
-        // If there is an error, we want to exit immediately.
-        if (result.isError()) {
-          return Result.error(result.getError());
+      final List<Argument<?>> missing = new ArrayList<>();
+      for (Argument<?> argument : arguments) {
+        // Could append using + and ternaries, but that looks messier. and I want it to be final.
+        final StringBuilder builder = new StringBuilder();
+        builder.append("--(")
+          .append(argument.getName())
+          .append(')');
+        if (!argument.isVoided()) {
+          builder.append("=(")
+            .append(argument.getType().getRegex())
+            .append(')');
         }
+        final Pattern pattern = Pattern.compile(builder.toString());
+        final Matcher matcher = pattern.matcher(content);
+        if (!matcher.find()) {
+          missing.add(argument);
+          continue;
+        }
+        // Should only be the first one
+        final String name = matcher.group(1);
+        if (argument.isVoided()) {
+          parsed.add(new ParsedArgument<>(name, null));
+          continue;
+        }
+        final String value = matcher.group(2);
+        Result<?> result = argument.getType().decode(UnvalidatedArgument.from(name, value));
         // If it's empty, it returned null. This is not an error state, instead we view it as a
         // "We don't care".
         if (result.isEmpty()) continue;
-        parsed.add(new ParsedArgument<>(argument.getName(), result.get()));
+
+        if (result.isError()) {
+          return Result.error(result.getError());
+        }
+
+        parsed.add(new ParsedArgument<>(name, result.get()));
       }
-      return Result.of(new ParsedArguments(parsed));
-    } catch (Throwable t) {
-      return Result.error(t);
+      if (!missing.isEmpty()) {
+        throw new MissingArgumentsException(missing);
+      }
+      return Result.of(new ParsedArguments((parsed)));
+    } catch (Exception ex) {
+      return Result.error(ex);
     }
+  }
+
+  public static void main(String[] args) {
+    String test = "!ban --user=123 --reason=\"Being a jerk to everyone\" --clear=true --output";
+    Argument<Integer> user = new Argument<>(Types.INTEGER_TYPE, "user", true);
+    Argument<Boolean> clear = new Argument<>(Types.BOOLEAN_TYPE, "clear", false);
+    Argument<String> reason = new Argument<>(Types.STRING_TYPE, "reason", false);
+    Argument<Void> output = new Argument<>(Types.VOID_TYPE, "output", false);
+
+    Parser<ParsedArguments> parser = new NamedParser();
+    Result<ParsedArguments> result = parser.parse(Argument.set(user, clear, reason, output), test);
+    result.onSuccess(System.out::println)
+      .onError(Exception.class, Exception::printStackTrace)
+      .onEmpty(() -> System.out.println("was empty?"));
   }
 }

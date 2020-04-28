@@ -33,17 +33,20 @@ public final class Types {
   public static final Type<Long> LONG_TYPE = createNumberType(Long::parseLong);
   public static final Type<Byte> BYTE_TYPE = createNumberType(Byte::parseByte);
   public static final Type<Short> SHORT_TYPE = createNumberType(Short::parseShort);
+  private static final String FLOATING_POINT_REGEX = "\\d*.?\\d*";
   public static final Type<Float> FLOAT_TYPE = createNumberType(Float::parseFloat);
-  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble);
+  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble, FLOATING_POINT_REGEX);
   public static final Type<Boolean> BOOLEAN_TYPE = new Type<>(
     (unvalidated) -> unvalidated.equals("true") || unvalidated.equals("false"),
     (unconverted) -> unconverted.equals("true"),
+    "true|false",
     Filter.TRIM_NEWLINES,
     Filter.TRIM_SPACES
   );
   public static final Type<Character> CHARACTER_TYPE = new Type<>(
     (unvalidated) -> unvalidated.length() == 3 && unvalidated.startsWith("'") && unvalidated.endsWith("'"),
     (unconverted) -> unconverted.charAt(1),
+    "'.'",
     Filter.TRIM_SPACES,
     Filter.TRIM_NEWLINES
   );
@@ -54,12 +57,15 @@ public final class Types {
     },
     (unconverted) -> {
       throw new IllegalStateException("Void type function called. Please make an issue.");
-    }
+    },
+    null
   );
-  private static final Pattern STRING_REGEX = Pattern.compile("\"(\\\\\"|[^\"])*[^\\\\]\"");
+  private static final String STRING_REGEX = "\"(\\\\\"|[^\"])*[^\\\\]\"";
+  private static final Pattern STRING_PATTERN = Pattern.compile(STRING_REGEX);
   public static final Type<String> STRING_TYPE = new Type<>(
-    (unvalidated) -> STRING_REGEX.matcher(unvalidated).matches(),
+    (unvalidated) -> STRING_PATTERN.matcher(unvalidated).matches(),
     (unconverted) -> unconverted.substring(1, unconverted.length() - 1).replace("\\\"", "\""),
+    STRING_REGEX,
     Filter.TRIM_NEWLINES,
     Filter.TRIM_SPACES
   );
@@ -78,9 +84,14 @@ public final class Types {
   }
 
   private static <T> Type<T> createNumberType(Function<String, T> function, Filter... filters) {
+    return createNumberType(function, "\\d+", filters);
+  }
+
+  private static <T> Type<T> createNumberType(Function<String, T> function, String regex, Filter... filters) {
     return new Type<>(
       (unvalidated) -> successfulConversion(function::apply, unvalidated),
       function,
+      regex,
       new ArrayList<Filter>(Arrays.asList(filters)) {{
         add(Filter.TRIM_NEWLINES);
         add(Filter.TRIM_SPACES);

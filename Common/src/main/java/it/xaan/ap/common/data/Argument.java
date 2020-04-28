@@ -30,7 +30,9 @@ import javax.annotation.Nullable;
  *
  * @param <T> The type of the argument.
  */
+@SuppressWarnings("WeakerAccess")
 public class Argument<T> {
+  public static final String NAME_REGEX = "[a-zA-Z_0-9]+";
   private final Type<T> type;
   @Nullable
   private final String name;
@@ -38,7 +40,7 @@ public class Argument<T> {
   private final boolean voided;
 
   /**
-   * Creates a new Argument.
+   * Creates a new Argument. The name, if not null, must match {@link #NAME_REGEX}.
    *
    * @param type     The type of the argument.
    * @param name     The name of the argument. Can be null for things like indexed arguments. This will be
@@ -46,6 +48,9 @@ public class Argument<T> {
    * @param required If the argument is required or not.
    */
   public Argument(Type<T> type, @Nullable String name, boolean required) {
+    if (name != null && !name.matches(NAME_REGEX)) {
+      throw new IllegalArgumentException("Names must match " + NAME_REGEX);
+    }
     this.type = type;
     this.name = name == null ? null : name.toLowerCase();
     this.required = required;
@@ -89,6 +94,6 @@ public class Argument<T> {
 
   @Override
   public String toString() {
-    return super.toString();
+    return String.format("Argument[type=%s,name=%s,required=%s,voided=%s]", getType(), getName(), isRequired(), isVoided());
   }
 }
