@@ -17,20 +17,21 @@
  */
 package it.xaan.ap.common.parsing.options;
 
-public class Options {
-  private final String prefix;
-  private final MissingPermissionsFailure missingPermissionsFailure;
+public final class OptionsBuilder {
+  private String prefix = "--";
+  private MissingPermissionsFailure namedFail = MissingPermissionsFailure.TOTAL;
 
-  public Options(String prefix, MissingPermissionsFailure missingPermissionsFailure) {
+  public OptionsBuilder withPrefix(String prefix) {
     this.prefix = prefix;
-    this.missingPermissionsFailure = missingPermissionsFailure;
+    return this;
   }
 
-  public String getPrefix() {
-    return this.prefix;
+  public OptionsBuilder withNamedFail(MissingPermissionsFailure namedFail) {
+    this.namedFail = namedFail;
+    return this;
   }
 
-  public MissingPermissionsFailure getMissingPermissionsFailure() {
-    return this.missingPermissionsFailure;
+  public Options build() {
+    return new Options(this.prefix, this.namedFail);
   }
 }

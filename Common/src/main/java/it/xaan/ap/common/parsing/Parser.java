@@ -18,9 +18,10 @@
 package it.xaan.ap.common.parsing;
 
 import it.xaan.ap.common.data.Argument;
+import it.xaan.ap.common.parsing.options.Options;
 import it.xaan.random.result.Result;
 import java.util.Set;
 
 public interface Parser<T> {
-  Result<T> parse(final Set<Argument<?>> arguments, String content);
+  Result<T> parse(final Set<Argument<?>> arguments, String content, Options options);
 }

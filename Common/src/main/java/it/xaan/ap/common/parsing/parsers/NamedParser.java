@@ -23,7 +23,8 @@ import it.xaan.ap.common.data.ParsedArgument;
 import it.xaan.ap.common.data.ParsedArguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
-import it.xaan.ap.common.parsing.Types;
+import it.xaan.ap.common.parsing.options.MissingPermissionsFailure;
+import it.xaan.ap.common.parsing.options.Options;
 import it.xaan.random.result.Result;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,15 @@ import java.util.regex.Pattern;
 public final class NamedParser implements Parser<ParsedArguments> {
 
   @Override
-  public Result<ParsedArguments> parse(Set<Argument<?>> arguments, String content) {
+  public Result<ParsedArguments> parse(Set<Argument<?>> arguments, String content, Options options) {
     try {
       final List<ParsedArgument<?>> parsed = new ArrayList<>();
       final List<Argument<?>> missing = new ArrayList<>();
       for (Argument<?> argument : arguments) {
         // Could append using + and ternaries, but that looks messier. and I want it to be final.
         final StringBuilder builder = new StringBuilder();
-        builder.append("--(")
+        builder.append(options.getPrefix())
+          .append("(")
           .append(argument.getName())
           .append(')');
         if (!argument.isVoided()) {
@@ -53,7 +55,11 @@ public final class NamedParser implements Parser<ParsedArguments> {
         final Matcher matcher = pattern.matcher(content);
         if (!matcher.find()) {
           missing.add(argument);
-          continue;
+          if (options.getMissingPermissionsFailure() == MissingPermissionsFailure.TOTAL) {
+            continue;
+          } else {
+            break;
+          }
         }
         // Should only be the first one
         final String name = matcher.group(1);
@@ -80,19 +86,5 @@ public final class NamedParser implements Parser<ParsedArguments> {
     } catch (Exception ex) {
       return Result.error(ex);
     }
-  }
-
-  public static void main(String[] args) {
-    String test = "!ban --user=123 --reason=\"Being a jerk to everyone\" --clear=true --output";
-    Argument<Integer> user = new Argument<>(Types.INTEGER_TYPE, "user", true);
-    Argument<Boolean> clear = new Argument<>(Types.BOOLEAN_TYPE, "clear", false);
-    Argument<String> reason = new Argument<>(Types.STRING_TYPE, "reason", false);
-    Argument<Void> output = new Argument<>(Types.VOID_TYPE, "output", false);
-
-    Parser<ParsedArguments> parser = new NamedParser();
-    Result<ParsedArguments> result = parser.parse(Argument.set(user, clear, reason, output), test);
-    result.onSuccess(System.out::println)
-      .onError(Exception.class, Exception::printStackTrace)
-      .onEmpty(() -> System.out.println("was empty?"));
   }
 }
