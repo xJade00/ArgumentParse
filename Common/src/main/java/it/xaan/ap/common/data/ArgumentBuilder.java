@@ -40,7 +40,7 @@ public final class ArgumentBuilder<T> {
   }
 
   public Argument<T> build() {
-    if(this.type == null) {
+    if (this.type == null) {
       throw new IllegalStateException("Type must be set.");
     }
     return new Argument<>(this.type, this.name, this.required);

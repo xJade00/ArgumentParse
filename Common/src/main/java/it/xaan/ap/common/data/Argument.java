@@ -23,18 +23,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /**
  * Represents a possible Argument.
  *
  * @param <T> The type of the argument.
  */
-@SuppressWarnings("WeakerAccess")
 public class Argument<T> {
   public static final String NAME_REGEX = "[a-zA-Z_0-9]+";
   private final Type<T> type;
-  @Nullable
   private final String name;
   private final boolean required;
   private final boolean voided;
@@ -47,12 +44,12 @@ public class Argument<T> {
    *                 lowercased for ease of parsing.
    * @param required If the argument is required or not.
    */
-  public Argument(Type<T> type, @Nullable String name, boolean required) {
-    if (name != null && !name.matches(NAME_REGEX)) {
+  public Argument(Type<T> type, String name, boolean required) {
+    if (!name.matches(NAME_REGEX)) {
       throw new IllegalArgumentException("Names must match " + NAME_REGEX);
     }
     this.type = type;
-    this.name = name == null ? null : name.toLowerCase();
+    this.name = name.toLowerCase();
     this.required = required;
     // Void types MUST use this specific type. People can make their own for everything else.
     this.voided = type == Types.VOID_TYPE;
@@ -66,7 +63,6 @@ public class Argument<T> {
     return this.type;
   }
 
-  @Nullable
   public String getName() {
     return this.name;
   }

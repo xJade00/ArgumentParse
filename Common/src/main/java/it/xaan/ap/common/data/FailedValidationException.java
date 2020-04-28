@@ -17,8 +17,6 @@
  */
 package it.xaan.ap.common.data;
 
-import it.xaan.ap.common.data.UnvalidatedArgument;
-
 public final class FailedValidationException extends RuntimeException {
   private final UnvalidatedArgument argument;
   private final String input;

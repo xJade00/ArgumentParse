@@ -33,9 +33,7 @@ public final class Types {
   public static final Type<Long> LONG_TYPE = createNumberType(Long::parseLong);
   public static final Type<Byte> BYTE_TYPE = createNumberType(Byte::parseByte);
   public static final Type<Short> SHORT_TYPE = createNumberType(Short::parseShort);
-  private static final String FLOATING_POINT_REGEX = "\\d*.?\\d*";
   public static final Type<Float> FLOAT_TYPE = createNumberType(Float::parseFloat);
-  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble, FLOATING_POINT_REGEX);
   public static final Type<Boolean> BOOLEAN_TYPE = new Type<>(
     (unvalidated) -> unvalidated.equals("true") || unvalidated.equals("false"),
     (unconverted) -> unconverted.equals("true"),
@@ -60,6 +58,8 @@ public final class Types {
     },
     null
   );
+  private static final String FLOATING_POINT_REGEX = "\\d*.?\\d*";
+  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble, FLOATING_POINT_REGEX);
   private static final String STRING_REGEX = "\"(\\\\\"|[^\"])*[^\\\\]\"";
   private static final Pattern STRING_PATTERN = Pattern.compile(STRING_REGEX);
   public static final Type<String> STRING_TYPE = new Type<>(
