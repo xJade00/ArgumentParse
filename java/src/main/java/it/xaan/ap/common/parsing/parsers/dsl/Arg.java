@@ -15,23 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.options;
+package it.xaan.ap.common.parsing.parsers.dsl;
 
-@SuppressWarnings("unused")
-public class Options {
-  private final String prefix;
-  private final MissingArgsStrategy missingArgsStrategy;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  public Options(String prefix, MissingArgsStrategy missingArgsStrategy) {
-    this.prefix = prefix;
-    this.missingArgsStrategy = missingArgsStrategy;
-  }
-
-  public String getPrefix() {
-    return this.prefix;
-  }
-
-  public MissingArgsStrategy getMissingArgsStrategy() {
-    return this.missingArgsStrategy;
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Arg {
+  String name() default "";
+  boolean hasDefault() default false;
 }

@@ -19,26 +19,31 @@ package it.xaan.ap.common.data;
 
 import it.xaan.ap.common.parsing.Type;
 
+@SuppressWarnings("unused")
 public final class ArgumentBuilder<T> {
   private Type<T> type;
   private String name;
   private boolean required;
 
+  @SuppressWarnings("unused")
   public ArgumentBuilder<T> withType(Type<T> type) {
     this.type = type;
     return this;
   }
 
+  @SuppressWarnings("unused")
   public ArgumentBuilder<T> withName(String name) {
     this.name = name;
     return this;
   }
 
+  @SuppressWarnings("unused")
   public ArgumentBuilder<T> withRequired(boolean required) {
     this.required = required;
     return this;
   }
 
+  @SuppressWarnings("unused")
   public Argument<T> build() {
     if (this.type == null) {
       throw new IllegalStateException("Type must be set.");

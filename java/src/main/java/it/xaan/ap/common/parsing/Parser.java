@@ -22,6 +22,7 @@ import it.xaan.ap.common.parsing.options.Options;
 import it.xaan.random.result.Result;
 import java.util.Collection;
 
+@SuppressWarnings("unused")
 public interface Parser<T> {
   Result<T> parse(Collection<Argument<?>> arguments, String content, Options options);
 }

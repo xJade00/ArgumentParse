@@ -29,6 +29,7 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the argument.
  */
+@SuppressWarnings("unused")
 public class Argument<T> {
   public static final String NAME_REGEX = "[a-zA-Z_0-9]+";
   private final Type<T> type;

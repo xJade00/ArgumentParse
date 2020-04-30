@@ -15,23 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.options;
+@ParametersAreNonnullByDefault
+@ReturnTypesAreNonNullByDefault
+package it.xaan.ap.common.data.parsed;
 
-@SuppressWarnings("unused")
-public class Options {
-  private final String prefix;
-  private final MissingArgsStrategy missingArgsStrategy;
-
-  public Options(String prefix, MissingArgsStrategy missingArgsStrategy) {
-    this.prefix = prefix;
-    this.missingArgsStrategy = missingArgsStrategy;
-  }
-
-  public String getPrefix() {
-    return this.prefix;
-  }
-
-  public MissingArgsStrategy getMissingArgsStrategy() {
-    return this.missingArgsStrategy;
-  }
-}
+import it.xaan.random.core.ReturnTypesAreNonNullByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;

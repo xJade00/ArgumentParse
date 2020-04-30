@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.data;
+package it.xaan.ap.common.data.parsed;
 
+import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.parsing.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 /**
  * Represents a list of ParsedArguments by name.
  */
-@SuppressWarnings("WeakerAccess")
-public final class ParsedNameAguments {
+public final class ParsedNameAguments implements ParsedArguments {
   private final Map<String, Object> backing = new HashMap<>();
 
   /**
@@ -48,40 +47,14 @@ public final class ParsedNameAguments {
     }
   }
 
-  /**
-   * Returns whether or not the {@link Argument} exists in the parsed arguments.
-   *
-   * @param argument The argument to check against.
-   *
-   * @return {@code false} if {@link #get(Argument)} would return null, {@code true} otherwise.
-   */
+  @Override
   public boolean exists(Argument<?> argument) {
     return argument.getType() == Types.VOID_TYPE ? this.backing.containsKey(argument.getName()) : getOpt(argument).isPresent();
   }
 
-  /**
-   * Gets the value of the {@link Argument}, wrapped in an {@link Optional}.
-   *
-   * @param argument The argument to get the value of.
-   * @param <T>      The type of the Argument.
-   *
-   * @return An empty Optional if {@link #exists(Argument)} would return false, otherwise an Optional containing
-   * the value.
-   */
-  public <T> Optional<T> getOpt(Argument<T> argument) {
-    return Optional.ofNullable(get(argument));
-  }
-
-  /**
-   * Gets the value of the {@link Argument}, possibly null.
-   *
-   * @param argument The Argument to check against.
-   * @param <T>      The type of the Argument.
-   *
-   * @return {@code null} if {@link #exists(Argument)} returns false, otherwise the value.
-   */
+  @Override
   @Nullable
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings({"unchecked", "NullableProblems"})
   public <T> T get(Argument<T> argument) {
     try {
       return argument.getType() == Types.VOID_TYPE ? null : (T) this.backing.get(argument.getName().toLowerCase());

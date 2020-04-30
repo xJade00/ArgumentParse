@@ -17,6 +17,7 @@
  */
 package it.xaan.ap.common.parsing.options;
 
+@SuppressWarnings("unused")
 public final class OptionsBuilder {
   private String prefix = "--";
   private MissingArgsStrategy namedFail = MissingArgsStrategy.TOTAL;

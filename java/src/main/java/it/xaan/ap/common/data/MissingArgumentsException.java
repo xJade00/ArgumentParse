@@ -28,6 +28,7 @@ public final class MissingArgumentsException extends RuntimeException {
     this.list = Collections.unmodifiableList(list);
   }
 
+  @SuppressWarnings("unused")
   public List<Argument<?>> getList() {
     return this.list;
   }

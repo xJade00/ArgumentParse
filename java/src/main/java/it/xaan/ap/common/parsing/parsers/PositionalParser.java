@@ -19,8 +19,8 @@ package it.xaan.ap.common.parsing.parsers;
 
 import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.data.MissingArgumentsException;
-import it.xaan.ap.common.data.ParsedArgument;
-import it.xaan.ap.common.data.ParsedPositionalArguments;
+import it.xaan.ap.common.data.parsed.ParsedArgument;
+import it.xaan.ap.common.data.parsed.ParsedPositionalArguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
 import it.xaan.ap.common.parsing.options.MissingArgsStrategy;
@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public final class PositionalParser implements Parser<ParsedPositionalArguments> {
   @Override
   public Result<ParsedPositionalArguments> parse(Collection<Argument<?>> arguments, String content, Options options) {

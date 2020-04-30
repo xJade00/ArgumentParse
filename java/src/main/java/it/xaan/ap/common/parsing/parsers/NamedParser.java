@@ -19,8 +19,8 @@ package it.xaan.ap.common.parsing.parsers;
 
 import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.data.MissingArgumentsException;
-import it.xaan.ap.common.data.ParsedArgument;
-import it.xaan.ap.common.data.ParsedNameAguments;
+import it.xaan.ap.common.data.parsed.ParsedArgument;
+import it.xaan.ap.common.data.parsed.ParsedNameAguments;
 import it.xaan.ap.common.data.UnvalidatedArgument;
 import it.xaan.ap.common.parsing.Parser;
 import it.xaan.ap.common.parsing.options.MissingArgsStrategy;
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
 public final class NamedParser implements Parser<ParsedNameAguments> {
 
   @Override

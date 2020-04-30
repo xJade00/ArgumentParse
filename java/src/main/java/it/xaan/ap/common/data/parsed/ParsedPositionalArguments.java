@@ -15,31 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.data;
+package it.xaan.ap.common.data.parsed;
 
+import it.xaan.ap.common.data.Argument;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
-@SuppressWarnings("WeakerAccess")
-public final class ParsedPositionalArguments {
+public final class ParsedPositionalArguments implements ParsedArguments {
   private final List<ParsedArgument<?>> list;
 
   public ParsedPositionalArguments(List<ParsedArgument<?>> list) {
     this.list = list;
   }
 
-  public boolean exists(Argument<?> argument) {
-    return getOpt(argument).isPresent();
-  }
-
-  public <T> Optional<T> getOpt(Argument<T> argument) {
-    return Optional.ofNullable(get(argument));
-  }
-
   @Nullable
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "NullableProblems"})
   public <T> T get(Argument<T> argument) {
     int index = Integer.parseInt(argument.getName());
     if (index >= this.list.size()) {
@@ -64,11 +55,11 @@ public final class ParsedPositionalArguments {
     if(!(obj instanceof ParsedPositionalArguments)) return false;
     ParsedPositionalArguments other = (ParsedPositionalArguments) obj;
 
-    return super.equals(obj);
+    return this.list.equals(other.list);
   }
 
   @Override
   public String toString() {
-    return super.toString();
+    return String.format("ParsedPotionalArguments[list=%s]", this.list);
   }
 }
