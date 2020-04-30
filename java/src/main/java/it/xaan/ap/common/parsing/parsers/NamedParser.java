@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public final class NamedParser implements Parser<ParsedNameAguments> {
 
+  private final static Object PRESENT = new Object();
+
   @Override
   public Result<ParsedNameAguments> parse(Collection<Argument<?>> arguments, String content, Options options) {
     arguments = new HashSet<>(arguments);
@@ -67,7 +69,8 @@ public final class NamedParser implements Parser<ParsedNameAguments> {
         // Should only be the first one
         final String name = matcher.group(1);
         if (argument.isVoided()) {
-          parsed.add(new ParsedArgument<>(name, null));
+          // using null means that ParsedNameArguments can't work properly
+          parsed.add(new ParsedArgument<>(name, PRESENT));
           continue;
         }
         final String value = matcher.group(2);
