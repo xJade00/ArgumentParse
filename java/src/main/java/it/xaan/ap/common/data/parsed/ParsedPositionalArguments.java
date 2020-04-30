@@ -51,8 +51,8 @@ public final class ParsedPositionalArguments implements ParsedArguments {
 
   @Override
   public boolean equals(Object obj) {
-    if(this == obj) return true;
-    if(!(obj instanceof ParsedPositionalArguments)) return false;
+    if (this == obj) return true;
+    if (!(obj instanceof ParsedPositionalArguments)) return false;
     ParsedPositionalArguments other = (ParsedPositionalArguments) obj;
 
     return this.list.equals(other.list);
