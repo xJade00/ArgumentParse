@@ -34,6 +34,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a parser based on positional arguments.
+ */
 @SuppressWarnings("unused")
 public final class PositionalParser implements Parser<ParsedPositionalArguments> {
   @Override

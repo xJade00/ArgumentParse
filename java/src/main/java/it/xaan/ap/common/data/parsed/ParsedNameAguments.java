@@ -47,17 +47,32 @@ public final class ParsedNameAguments implements ParsedArguments {
     }
   }
 
+  /**
+   * See {@link ParsedArguments#exists(Argument)}. This has special handling for the void type.
+   *
+   * @param argument The argument to check against.
+   *
+   * @return If the argument's type is of {@link Types#VOID_TYPE}, if the backing map contains the key, otherwise false.
+   * If the type isn't void, see {@link ParsedArguments#exists(Argument)};
+   */
   @Override
   public boolean exists(Argument<?> argument) {
     return argument.getType() == Types.VOID_TYPE ? this.backing.containsKey(argument.getName()) : getOpt(argument).isPresent();
   }
 
+  /**
+   * See {@link ParsedArguments#get(Argument)}. This will always return null for VOID_TYPE.
+   *
+   * @param argument The Argument to check against.
+   *
+   * @return null if the type is {@link Types#VOID_TYPE}, otherwise see {@link ParsedArguments#get(Argument)}.
+   */
   @Override
   @Nullable
   @SuppressWarnings({"unchecked", "NullableProblems"})
   public <T> T get(Argument<T> argument) {
     try {
-      return argument.getType() == Types.VOID_TYPE ? null : (T) this.backing.get(argument.getName().toLowerCase());
+      return argument.getType() == Types.VOID_TYPE ? null : (T) this.backing.get(argument.getName());
     } catch (ClassCastException ignored) {
       throw new ClassCastException("You should not be seeing this. If you do, please open a bug report. Tried to cast to " +
         argument.getName() + " with the value in the backing map being " + this.backing.get(argument.getName()));

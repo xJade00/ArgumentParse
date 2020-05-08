@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.dsl;
+package it.xaan.ap.common.parsing.parsers.OLD_DSL;
 
 import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.data.MissingArgumentsException;
@@ -38,16 +38,40 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// TODO: Not make this a parser, instead a static wrapper class.
+
+/**
+ * A DSL parser that parses arguments into a new instance of a class. It is important to note
+ * that {@link Argument#isRequired()} is completely disregarded with this class. An argument
+ * is considered optonal under one of two circumstances: <br>
+ * - It's type is {@code Optional<T>}, in which case it has a default of {@link Optional#empty()} <br>
+ * - {@link Arg#hasDefault()} is set to true. <br>
+ * <br>
+ *
+ * @param <T> The class to initialise.
+ * @param <U> The parser to use.
+ */
 @SuppressWarnings({"ConstantConditions", "unused"})
 public final class DSLParser<T, U extends ParsedArguments> implements Parser<T> {
   private final Class<? extends T> clazz;
   private final Parser<U> underlying;
   private final List<Pair<Class<?>, Argument<?>>> constructor;
 
+  /**
+   * Creates a new DSLParser.
+   *
+   * @param clazz The class to inject into.
+   * @param underlying The underlying parser to use to parse the content.
+   * @param constructor The constructor to use
+   */
   public DSLParser(Class<? extends T> clazz, Parser<U> underlying, List<Pair<Class<?>, Argument<?>>> constructor) {
     this.clazz = clazz;
     this.underlying = underlying;
-    this.constructor = constructor;
+    this.constructor = constructor == null ? new ArrayList<>() : constructor;
+  }
+
+  public DSLParser(Class<? extends T> clazz, Parser<U> underlying) {
+    this(clazz, underlying, new ArrayList<>());
   }
 
   @Override
@@ -93,7 +117,7 @@ public final class DSLParser<T, U extends ParsedArguments> implements Parser<T> 
             values.put(field, Optional.empty());
           } else {
             if (!data.hasDefault()) {
-              throw new MissingFieldException(field);
+              throw new MissingValueException(field);
             }
           }
         }

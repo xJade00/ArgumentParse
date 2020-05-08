@@ -15,17 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.dsl;
+package it.xaan.ap.common.parsing.parsers.OLD_DSL;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface Arg {
-  String name() default "";
+/**
+ * Represents an exceptional state where there isn't a suitable default value for a field,
+ */
+@SuppressWarnings("unused")
+public final class MissingValueException extends RuntimeException {
+  private final Field field;
 
-  boolean hasDefault() default false;
+  public MissingValueException(Field field) {
+    super("Missing argument for field: " + field);
+    this.field = field;
+  }
+
+  public Field getField() {
+    return this.field;
+  }
 }

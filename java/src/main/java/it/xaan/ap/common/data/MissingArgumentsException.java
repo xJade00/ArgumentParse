@@ -20,14 +20,25 @@ package it.xaan.ap.common.data;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents an exceptional state where the parser was missing required arguments.
+ */
 public final class MissingArgumentsException extends RuntimeException {
   private final List<Argument<?>> list;
 
+  /**
+   * Creates a new {@link MissingArgumentsException} from the list.
+   *
+   * @param list The list of mising arguments.
+   */
   public MissingArgumentsException(List<Argument<?>> list) {
     super("Missing arguments: " + list);
     this.list = Collections.unmodifiableList(list);
   }
 
+  /**
+   * @return An unmodifiable list of all missing arguments.
+   */
   @SuppressWarnings("unused")
   public List<Argument<?>> getList() {
     return this.list;

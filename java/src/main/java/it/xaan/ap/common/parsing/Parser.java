@@ -19,10 +19,33 @@ package it.xaan.ap.common.parsing;
 
 import it.xaan.ap.common.data.Argument;
 import it.xaan.ap.common.parsing.options.Options;
+import it.xaan.ap.common.parsing.options.OptionsBuilder;
 import it.xaan.random.result.Result;
 import java.util.Collection;
 
+/**
+ * Represents a parser that parses a list of arguments into the specified type.
+ */
 @SuppressWarnings("unused")
 public interface Parser<T> {
+  /**
+   * Parses a number of arguments in the specified content to a readable format. The content
+   * that is passed should be stripped of uneccesary symbols. Such as with {@link it.xaan.ap.common.parsing.parsers.NamedParser}
+   * if you are parsing {@code ?ban user --days=7} you should only be passing {@code --days=7}.
+   *
+   * @param arguments The arguments.
+   * @param content   The content to parse.
+   * @param options   THe options to use.
+   *
+   * @return A {@link Result}. This contains an instance of {@code T} in a success state if the content could be parsed,
+   * it'll contain an error in an error state if one was thrown.
+   */
   Result<T> parse(Collection<Argument<?>> arguments, String content, Options options);
+
+  /**
+   * The same as {@link #parse(Collection, String, Options)} but with the default options of {@code new OptionsBuilder().build()}
+   */
+  default Result<T> parse(Collection<Argument<?>> arguments, String content) {
+    return parse(arguments, content, new OptionsBuilder().build());
+  }
 }

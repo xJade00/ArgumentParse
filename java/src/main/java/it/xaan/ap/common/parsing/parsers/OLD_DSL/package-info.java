@@ -15,23 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.dsl;
+@ParametersAreNonnullByDefault
+@ReturnTypesAreNonNullByDefault
+package it.xaan.ap.common.parsing.parsers.OLD_DSL;
 
-@SuppressWarnings("unused")
-public final class DslMetadata {
-  private final boolean optional;
-  private final boolean hasDefault;
-
-  public DslMetadata(boolean optional, boolean hasDefault) {
-    this.optional = optional;
-    this.hasDefault = hasDefault;
-  }
-
-  public boolean isOptional() {
-    return this.optional;
-  }
-
-  public boolean hasDefault() {
-    return this.hasDefault;
-  }
-}
+import it.xaan.random.core.ReturnTypesAreNonNullByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;

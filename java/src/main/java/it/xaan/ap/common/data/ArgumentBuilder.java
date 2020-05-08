@@ -19,34 +19,63 @@ package it.xaan.ap.common.data;
 
 import it.xaan.ap.common.parsing.Type;
 
+/**
+ * A builder for the {@link Argument} class. You must set type and name. Required is false by default.
+ *
+ * @param <T>
+ */
 @SuppressWarnings("unused")
 public final class ArgumentBuilder<T> {
   private Type<T> type;
   private String name;
-  private boolean required;
+  private boolean required = false;
 
-  @SuppressWarnings("unused")
+  /**
+   * Sets the {@link Type} for this argument.
+   *
+   * @param type The type.
+   *
+   * @return The current builder, useful for chaining.
+   */
   public ArgumentBuilder<T> withType(Type<T> type) {
     this.type = type;
     return this;
   }
 
-  @SuppressWarnings("unused")
+  /**
+   * Sets the name for this argument.
+   *
+   * @param name The name of the argument.
+   *
+   * @return The current builder, useful for chaining.
+   */
   public ArgumentBuilder<T> withName(String name) {
     this.name = name;
     return this;
   }
 
-  @SuppressWarnings("unused")
+  /**
+   * Sets if the argument is required.
+   *
+   * @param required If the argument is required.
+   *
+   * @return The current builder, useful for chaining.
+   */
   public ArgumentBuilder<T> withRequired(boolean required) {
     this.required = required;
     return this;
   }
 
-  @SuppressWarnings("unused")
+  /**
+   * Builds a new Argument from the builder.
+   *
+   * @return The built argument.
+   *
+   * @throws IllegalStateException When type or name isn't set.
+   */
   public Argument<T> build() {
-    if (this.type == null) {
-      throw new IllegalStateException("Type must be set.");
+    if (this.type == null || this.name == null) {
+      throw new IllegalStateException("Type and name must be set.");
     }
     return new Argument<>(this.type, this.name, this.required);
   }

@@ -35,7 +35,6 @@ public class Argument<T> {
   private final Type<T> type;
   private final String name;
   private final boolean required;
-  private final boolean voided;
 
   /**
    * Creates a new Argument. The name, if not null, must match {@link #NAME_REGEX}.
@@ -52,30 +51,50 @@ public class Argument<T> {
     this.type = type;
     this.name = name.toLowerCase();
     this.required = required;
-    // Void types MUST use this specific type. People can make their own for everything else.
-    this.voided = type == Types.VOID_TYPE;
   }
 
+  /**
+   * Creates a new Collection based on the arguments, a helper method for people on Java 8.
+   *
+   * @param supplier The supplier of the collection, should be empty.
+   * @param elements The arguments
+   * @param <T>      The collection
+   *
+   * @return The collection populated with the arguments.
+   */
   public static <T extends Collection<Argument<?>>> T collection(Supplier<T> supplier, Argument<?>... elements) {
     T collection = supplier.get();
     collection.addAll(Arrays.asList(elements));
     return collection;
   }
 
+  /**
+   * @return The {@link Type} for this argument.
+   */
   public Type<T> getType() {
     return this.type;
   }
 
+  /**
+   * @return The name for this argument.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * @return If this argument is required by the user.
+   */
   public boolean isRequired() {
     return this.required;
   }
 
+  /**
+   * @return If the argument is of {@link Types#VOID_TYPE}.
+   */
   public boolean isVoided() {
-    return this.voided;
+    // Void types MUST use this specific type. People can make their own for everything else.
+    return getType() == Types.VOID_TYPE;
   }
 
   @Override

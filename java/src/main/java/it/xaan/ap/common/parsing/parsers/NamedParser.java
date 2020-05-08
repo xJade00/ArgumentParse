@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a parser that parses arguments based on naming, such as --name="Hello world"
+ */
 @SuppressWarnings("unused")
 public final class NamedParser implements Parser<ParsedNameAguments> {
 

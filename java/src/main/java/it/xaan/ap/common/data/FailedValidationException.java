@@ -17,22 +17,27 @@
  */
 package it.xaan.ap.common.data;
 
+/**
+ * Represents an exceptional state where the type couldn't validate an argument.
+ */
 @SuppressWarnings("unused")
 public final class FailedValidationException extends RuntimeException {
   private final UnvalidatedArgument argument;
-  private final String input;
 
-  public FailedValidationException(final UnvalidatedArgument argument, final String input) {
-    super(String.format("Couldn't validated argument %s with input %s", argument, input));
+  /**
+   * Creates a new {@link FailedValidationException} out of the following argument and input.
+   *
+   * @param argument The argument that couldn't be validated.
+   */
+  public FailedValidationException(final UnvalidatedArgument argument) {
+    super(String.format("Couldn't validated argument %s.", argument));
     this.argument = argument;
-    this.input = input;
   }
 
+  /**
+   * @return The argument that couldn't be validated.
+   */
   public UnvalidatedArgument getArgument() {
     return this.argument;
-  }
-
-  public String getInput() {
-    return this.input;
   }
 }

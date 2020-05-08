@@ -15,20 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.dsl;
+package it.xaan.ap.common.parsing.parsers.OLD_DSL;
 
-import java.lang.reflect.Field;
-
+/**
+ * Represents some metadata about arguments for the {@link DSLParser}.
+ */
 @SuppressWarnings("unused")
-public final class MissingFieldException extends RuntimeException {
-  private final Field field;
+public final class DslMetadata {
+  private final boolean optional;
+  private final boolean hasDefault;
 
-  public MissingFieldException(Field field) {
-    super("Missing argument for field: " + field);
-    this.field = field;
+  public DslMetadata(boolean optional, boolean hasDefault) {
+    this.optional = optional;
+    this.hasDefault = hasDefault;
   }
 
-  public Field getField() {
-    return this.field;
+  public boolean isOptional() {
+    return this.optional;
+  }
+
+  public boolean hasDefault() {
+    return this.hasDefault;
   }
 }

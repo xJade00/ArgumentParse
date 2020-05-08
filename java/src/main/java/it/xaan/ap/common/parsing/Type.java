@@ -127,7 +127,7 @@ public final class Type<T> {
     T instance;
     try {
       boolean valid = getValidator().test(filtered);
-      if (!valid) return Result.error(new FailedValidationException(argument, filtered));
+      if (!valid) return Result.error(new FailedValidationException(argument));
       instance = getConverter().apply(filtered);
     } catch (Throwable exception) {
       return Result.error(exception);

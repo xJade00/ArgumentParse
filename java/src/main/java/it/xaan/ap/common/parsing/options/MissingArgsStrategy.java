@@ -17,7 +17,18 @@
  */
 package it.xaan.ap.common.parsing.options;
 
+/**
+ * Represents what to do when there are missing arguments.
+ */
 public enum MissingArgsStrategy {
+  /**
+   * Immediately exit on a missing argument, this saves processing time but if there
+   * are a lot of missing arguments, it can take awhile to tell the user about them all.
+   */
   QUICK,
+  /**
+   * Processes all available arguments before reporting missing ones. This takes more
+   * processing time but will tell the user immediately everything they are missing.
+   */
   TOTAL
 }

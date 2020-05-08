@@ -20,6 +20,9 @@ package it.xaan.ap.common.data.parsed;
 import it.xaan.ap.common.data.Argument;
 import java.util.Optional;
 
+/**
+ * Represents a number of parsed arguments,
+ */
 public interface ParsedArguments {
   /**
    * Returns whether or not the {@link Argument} exists in the parsed arguments.

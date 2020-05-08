@@ -17,22 +17,48 @@
  */
 package it.xaan.ap.common.parsing.options;
 
+/**
+ * The builder for a new {@link Options}. <br> <br>
+ * <p>
+ * Defualts: <br>
+ * Prefix: {@code --} <br>
+ * Missing arguments strategy: {@link MissingArgsStrategy#TOTAL}
+ */
 @SuppressWarnings("unused")
 public final class OptionsBuilder {
   private String prefix = "--";
-  private MissingArgsStrategy namedFail = MissingArgsStrategy.TOTAL;
+  private MissingArgsStrategy missingArgsStrategy = MissingArgsStrategy.TOTAL;
 
+  /**
+   * Sets the prefix for this builder.
+   *
+   * @param prefix The prefix to use.
+   *
+   * @return The current builder, useful for chaining.
+   */
   public OptionsBuilder withPrefix(String prefix) {
     this.prefix = prefix;
     return this;
   }
 
-  public OptionsBuilder withNamedFail(MissingArgsStrategy namedFail) {
-    this.namedFail = namedFail;
+  /**
+   * Sets the missing arguments strategy for this builder.
+   *
+   * @param missingArgsStrategy The missing arguments strategy to use.
+   *
+   * @return The current builder, useful for chaining.
+   */
+  public OptionsBuilder withMissingArgsStrategy(MissingArgsStrategy missingArgsStrategy) {
+    this.missingArgsStrategy = missingArgsStrategy;
     return this;
   }
 
+  /**
+   * Creates a new {@link Options} instance based on the prefix and missing args strategy.
+   *
+   * @return The new Options instance.
+   */
   public Options build() {
-    return new Options(this.prefix, this.namedFail);
+    return new Options(this.prefix, this.missingArgsStrategy);
   }
 }

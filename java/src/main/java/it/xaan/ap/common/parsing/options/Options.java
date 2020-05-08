@@ -17,20 +17,35 @@
  */
 package it.xaan.ap.common.parsing.options;
 
+/**
+ * Represents a number of options the parsers can use. You are encouraged to make subclasses of this.
+ */
 @SuppressWarnings("unused")
 public class Options {
   private final String prefix;
   private final MissingArgsStrategy missingArgsStrategy;
 
+  /**
+   * Creates a new {@link Options}.
+   *
+   * @param prefix              The prefix for arguments, if applicable.
+   * @param missingArgsStrategy The strategy for missing arguments.
+   */
   public Options(String prefix, MissingArgsStrategy missingArgsStrategy) {
     this.prefix = prefix;
     this.missingArgsStrategy = missingArgsStrategy;
   }
 
+  /**
+   * @return The prefix for the arguments.
+   */
   public String getPrefix() {
     return this.prefix;
   }
 
+  /**
+   * @return The strategy for missing arguments.
+   */
   public MissingArgsStrategy getMissingArgsStrategy() {
     return this.missingArgsStrategy;
   }

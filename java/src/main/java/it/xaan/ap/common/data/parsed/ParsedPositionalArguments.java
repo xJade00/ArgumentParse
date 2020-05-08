@@ -18,15 +18,26 @@
 package it.xaan.ap.common.data.parsed;
 
 import it.xaan.ap.common.data.Argument;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
+/**
+ * Represents a list of arguments based on their position.
+ */
 public final class ParsedPositionalArguments implements ParsedArguments {
   private final List<ParsedArgument<?>> list;
 
+  /**
+   * Creates a new {@link ParsedPositionalArguments}.
+   *
+   * @param list The list of arguments.
+   */
+  @SuppressWarnings("ConstantConditions")
   public ParsedPositionalArguments(List<ParsedArgument<?>> list) {
-    this.list = list;
+    this.list = list.stream().sorted(Comparator.comparing(ParsedArgument::getName)).collect(Collectors.toList());
   }
 
   @Nullable
