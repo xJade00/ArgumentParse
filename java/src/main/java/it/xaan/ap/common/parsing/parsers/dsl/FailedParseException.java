@@ -15,23 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.OLD_DSL;
+package it.xaan.ap.common.parsing.parsers.dsl;
 
-import java.lang.reflect.Field;
-
-/**
- * Represents an exceptional state where there isn't a suitable default value for a field,
- */
-@SuppressWarnings("unused")
-public final class MissingValueException extends RuntimeException {
-  private final Field field;
-
-  public MissingValueException(Field field) {
-    super("Missing argument for field: " + field);
-    this.field = field;
+public final class FailedParseException extends RuntimeException {
+  public FailedParseException() {
+    super();
   }
 
-  public Field getField() {
-    return this.field;
+  public FailedParseException(String message) {
+    super(message);
+  }
+
+  public FailedParseException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public FailedParseException(Throwable cause) {
+    super(cause);
+  }
+
+  protected FailedParseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
   }
 }

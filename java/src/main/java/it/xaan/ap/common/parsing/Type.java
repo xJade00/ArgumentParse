@@ -65,6 +65,7 @@ public final class Type<T> {
   private final Function<String, T> converter;
   private final Filter[] filters;
   private final String regex;
+  private final Class<T> clazz;
 
   /**
    * Constructs a new {@link Type} object. The main function of this class is to turn a {@link
@@ -88,16 +89,19 @@ public final class Type<T> {
    *                  This is simply used to find the argument, not check that it's valid. For instance,
    *                  a regex for {@code int} is {@code \d+}, even though you could input {@code 2147483648} which
    *                  is normally outside the range. Null is the same as {@code .+}.
+   * @param clazz     The class this type represents
    * @param filters   A list of filters that will transform the content to be easier to validate.
    */
   public Type(
     final Predicate<String> validator,
     final Function<String, T> converter,
     @Nullable final String regex,
+    Class<T> clazz,
     final Filter... filters) {
     this.validator = validator;
     this.converter = converter;
     this.regex = regex == null ? ".+" : regex;
+    this.clazz = clazz;
     this.filters = filters;
   }
 
@@ -173,12 +177,24 @@ public final class Type<T> {
   }
 
   /**
-   * Getter for the regex of this type, aka what it can accept. If null was originally passed
+   * Getter for the regex of this type, aka what it can accept. If null was originally passed then this is equal to
+   * passing {@code .+}.
    *
    * @return The regex for this type, for gathering.
    */
   public String getRegex() {
     return this.regex;
+  }
+
+
+  /**
+   * Getter for the {@link Class} the {@link Type} applies for.<br>
+   * For instance: {@link Types#STRING_TYPE} applies to {@link String}.
+   *
+   * @return The class that this type applies to.
+   */
+  public Class<T> getClazz() {
+    return this.clazz;
   }
 
   @Override

@@ -15,9 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@ParametersAreNonnullByDefault
-@ReturnTypesAreNonNullByDefault
-package it.xaan.ap.common.parsing.parsers.OLD_DSL;
+package it.xaan.ap.common.parsing.parsers.dsl;
 
-import it.xaan.random.core.ReturnTypesAreNonNullByDefault;
-import javax.annotation.ParametersAreNonnullByDefault;
+import it.xaan.ap.common.data.Argument;
+import java.util.Collection;
+
+public final class InvalidConstructorException extends RuntimeException {
+
+  private final Collection<Argument<?>> arguments;
+
+  public InvalidConstructorException(Collection<Argument<?>> arguments) {
+    super("ARGS: " + arguments);
+    this.arguments = arguments;
+  }
+
+  public Collection<Argument<?>> getArguments() {
+    return this.arguments;
+  }
+}

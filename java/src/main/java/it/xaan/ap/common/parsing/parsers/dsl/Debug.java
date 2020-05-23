@@ -15,26 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package it.xaan.ap.common.parsing.parsers.OLD_DSL;
+package it.xaan.ap.common.parsing.parsers.dsl;
 
-/**
- * Represents some metadata about arguments for the {@link DSLParser}.
- */
-@SuppressWarnings("unused")
-public final class DslMetadata {
-  private final boolean optional;
-  private final boolean hasDefault;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  public DslMetadata(boolean optional, boolean hasDefault) {
-    this.optional = optional;
-    this.hasDefault = hasDefault;
-  }
-
-  public boolean isOptional() {
-    return this.optional;
-  }
-
-  public boolean hasDefault() {
-    return this.hasDefault;
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Debug {
+  String name();
 }

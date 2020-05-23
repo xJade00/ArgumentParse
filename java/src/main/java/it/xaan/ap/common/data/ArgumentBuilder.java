@@ -31,6 +31,15 @@ public final class ArgumentBuilder<T> {
   private boolean required = false;
 
   /**
+   * Creates a new Builder with the initial {@link Type}.
+   *
+   * @param type The initial type.
+   */
+  public ArgumentBuilder(Type<T> type) {
+    this.type = type;
+  }
+
+  /**
    * Sets the {@link Type} for this argument.
    *
    * @param type The type.

@@ -62,6 +62,9 @@ public final class NamedParser implements Parser<ParsedNameAguments> {
         final Pattern pattern = Pattern.compile(builder.toString());
         final Matcher matcher = pattern.matcher(content);
         if (!matcher.find()) {
+          if (!argument.isRequired()) {
+            continue;
+          }
           missing.add(argument);
           if (options.getMissingArgsStrategy() == MissingArgsStrategy.TOTAL) {
             continue;

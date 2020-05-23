@@ -19,6 +19,7 @@ package it.xaan.ap.common.data.parsed;
 
 import it.xaan.ap.common.data.Argument;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * Represents a number of parsed arguments,
@@ -44,7 +45,6 @@ public interface ParsedArguments {
    * @return An empty Optional if {@link #exists(Argument)} would return false, otherwise an Optional containing
    * the value.
    */
-  @SuppressWarnings("ConstantConditions")
   default <T> Optional<T> getOpt(Argument<T> argument) {
     return Optional.ofNullable(get(argument));
   }
@@ -57,5 +57,6 @@ public interface ParsedArguments {
    *
    * @return {@code null} if {@link #exists(Argument)} returns false, otherwise the value.
    */
+  @Nullable
   <T> T get(Argument<T> argument);
 }

@@ -38,23 +38,19 @@ public final class Types {
   /**
    * Type for {@link Integer}
    */
-  public static final Type<Integer> INTEGER_TYPE = createNumberType(Integer::parseInt);
+  public static final Type<Integer> INTEGER_TYPE = createNumberType(Integer::parseInt, int.class);
   /**
    * Type for {@link Long}
    */
-  public static final Type<Long> LONG_TYPE = createNumberType(Long::parseLong);
+  public static final Type<Long> LONG_TYPE = createNumberType(Long::parseLong, long.class);
   /**
    * Type for {@link Byte}
    */
-  public static final Type<Byte> BYTE_TYPE = createNumberType(Byte::parseByte);
+  public static final Type<Byte> BYTE_TYPE = createNumberType(Byte::parseByte, byte.class);
   /**
    * Type for {@link Short}
    */
-  public static final Type<Short> SHORT_TYPE = createNumberType(Short::parseShort);
-  /**
-   * Type for {@link Float}
-   */
-  public static final Type<Float> FLOAT_TYPE = createNumberType(Float::parseFloat);
+  public static final Type<Short> SHORT_TYPE = createNumberType(Short::parseShort, short.class);
   /**
    * Type for {@link Boolean}
    */
@@ -62,6 +58,7 @@ public final class Types {
     (unvalidated) -> unvalidated.equals("true") || unvalidated.equals("false"),
     (unconverted) -> unconverted.equals("true"),
     "true|false",
+    boolean.class,
     Filter.TRIM_NEWLINES,
     Filter.TRIM_SPACES
   );
@@ -72,6 +69,7 @@ public final class Types {
     (unvalidated) -> unvalidated.startsWith("'") && unvalidated.endsWith("'") && unvalidated.length() == 3,
     (unconverted) -> unconverted.charAt(1),
     "'.'",
+    char.class,
     Filter.TRIM_SPACES,
     Filter.TRIM_NEWLINES
   );
@@ -86,13 +84,9 @@ public final class Types {
     (unconverted) -> {
       throw new IllegalStateException("Void type function called. Please make an issue.");
     },
-    null
+    null,
+    Void.class
   );
-  private static final String FLOATING_POINT_REGEX = "-?\\d*.?\\d*";
-  /**
-   * Type for {@link Double}
-   */
-  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble, FLOATING_POINT_REGEX);
   private static final String STRING_REGEX = "\"(\\\\.|[^\\\\\"])*\"";
   private static final Pattern STRING_PATTERN = Pattern.compile(STRING_REGEX);
   /**
@@ -102,9 +96,19 @@ public final class Types {
     (unvalidated) -> STRING_PATTERN.matcher(unvalidated).matches(),
     (unconverted) -> unconverted.substring(1, unconverted.length() - 1).replaceAll("\\\\(.)", "$1"),
     STRING_REGEX,
+    String.class,
     Filter.TRIM_NEWLINES,
     Filter.TRIM_SPACES
   );
+  private static final String FLOATING_POINT_REGEX = "-?\\d*.?\\d*";
+  /**
+   * Type for {@link Float}
+   */
+  public static final Type<Float> FLOAT_TYPE = createNumberType(Float::parseFloat, FLOATING_POINT_REGEX, float.class);
+  /**
+   * Type for {@link Double}
+   */
+  public static final Type<Double> DOUBLE_TYPE = createNumberType(Double::parseDouble, FLOATING_POINT_REGEX, Double.class);
   @SuppressWarnings("rawtypes")
   private static final Map<Type, Type> types = new HashMap<>();
 
@@ -143,6 +147,7 @@ public final class Types {
           return elements;
         },
         regex,
+        List.class,
         Filter.TRIM_NEWLINES,
         Filter.TRIM_SPACES
       );
@@ -181,19 +186,19 @@ public final class Types {
     }
   }
 
-  private static <T> Type<T> createNumberType(Function<String, T> function, Filter... filters) {
-    return createNumberType(function, "-?\\d+", filters);
+  private static <T> Type<T> createNumberType(Function<String, T> function, Class<T> clazz, Filter... filters) {
+    return createNumberType(function, "-?\\d+", clazz, filters);
   }
 
-  private static <T> Type<T> createNumberType(Function<String, T> function, String regex, Filter... filters) {
+  private static <T> Type<T> createNumberType(Function<String, T> function, String regex, Class<T> clazz, Filter... filters) {
     return new Type<>(
       (unvalidated) -> successfulConversion(function::apply, unvalidated),
       function,
       regex,
-      new ArrayList<Filter>(Arrays.asList(filters)) {{
-        add(Filter.TRIM_NEWLINES);
-        add(Filter.TRIM_SPACES);
-      }}.stream().distinct().toArray(Filter[]::new)
+      clazz, new ArrayList<Filter>(Arrays.asList(filters)) {{
+      add(Filter.TRIM_NEWLINES);
+      add(Filter.TRIM_SPACES);
+    }}.stream().distinct().toArray(Filter[]::new)
     );
   }
 

@@ -28,20 +28,20 @@ import java.util.Objects;
 import org.junit.Test;
 
 public class TypeTest {
-  private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase, null);
+  private final Type<String> success = new Type<>(Objects::nonNull, String::toLowerCase, null, String.class);
   private final Type<String> error =
     new Type<>(
       Objects::nonNull,
       x -> {
         throw new RuntimeException("Runtime exception thrown.");
-      }, null);
-  private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null, null);
+      }, null, String.class);
+  private final Type<String> nullable = new Type<>(Objects::nonNull, x -> null, null, String.class);
   private final Type<String> failed =
     new Type<>(
       Objects::isNull,
       x -> {
         throw new IllegalStateException("Runtime exception thrown.");
-      }, null);
+      }, null, String.class);
   private final UnvalidatedArgument arg = UnvalidatedArgument.from("Name", "TESTING");
 
   @Test
