@@ -1,4 +1,4 @@
-name := "CuddlegangBot"
+name := "ArgumentParse"
 version := "0.0.1"
 scalaVersion := "2.13.1"
 autoScalaLibrary := false
@@ -22,7 +22,7 @@ val commonSettings = Seq(
   version := "1.1.1",
   developers := devs,
   startYear := Some(2020),
-  homepage := Some(new URL("https://github.com/xaanit/RandomUtilities")),
+  homepage := Some(new URL("https://github.com/xaanit/ArgumentParse")),
   libraryDependencies ++= Seq(
     "com.novocode" % "junit-interface" % "0.11" % "test",
     "junit" % "junit" % "4.13" % "test",
