@@ -26,7 +26,6 @@ import it.xaan.random.core.Pair;
 import it.xaan.random.result.Result;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -111,7 +110,7 @@ public final class DSL<R extends ParsedArguments, C> {
       .filter(x -> x.getParameterTypes().length == named.size())
       .filter(x -> Arrays.stream(x.getParameters()).allMatch(parameter -> {
         Class<?> clazz = parameter.getType();
-        String name = parameter.isNamePresent() ? parameter.getName() : parameter.getAnnotation(Debug.class).name();
+        String name = parameter.isNamePresent() ? parameter.getName() : parameter.getAnnotation(Parameter.class).name();
         return containsWhere(named, pair -> {
           String argName = pair.getFirst();
           Class<?> argClass = pair.getSecond();
@@ -119,10 +118,10 @@ public final class DSL<R extends ParsedArguments, C> {
         });
       }))
       .filter(x -> {
-        if (Arrays.stream(x.getParameters()).allMatch(Parameter::isNamePresent)) {
+        if (Arrays.stream(x.getParameters()).allMatch(java.lang.reflect.Parameter::isNamePresent)) {
           return true;
         } else {
-          return Arrays.stream(x.getParameterAnnotations()).allMatch(arr -> Arrays.stream(arr).anyMatch(annotation -> annotation.annotationType() == Debug.class));
+          return Arrays.stream(x.getParameterAnnotations()).allMatch(arr -> Arrays.stream(arr).anyMatch(annotation -> annotation.annotationType() == Parameter.class));
         }
       })
       .map(ctor ->
@@ -131,10 +130,10 @@ public final class DSL<R extends ParsedArguments, C> {
             indexWhere(
               Arrays.asList(ctor.getParameters()),
               param -> {
-                if (Arrays.stream(ctor.getParameters()).allMatch(Parameter::isNamePresent)) {
+                if (Arrays.stream(ctor.getParameters()).allMatch(java.lang.reflect.Parameter::isNamePresent)) {
                   return param.getName().equalsIgnoreCase(pair.getFirst());
                 } else {
-                  return param.getAnnotation(Debug.class).name().equalsIgnoreCase(pair.getFirst());
+                  return param.getAnnotation(Parameter.class).name().equalsIgnoreCase(pair.getFirst());
                 }
               }
             )
